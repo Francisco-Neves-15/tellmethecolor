@@ -4,10 +4,6 @@ import Link from "next/link";
 
 // Style
 import useGlobalStyles from "@/hooks/useGlobalStyles";
-import fStyles from "./style.module.scss"
-
-// Hooks
-import { useI18n } from "@/hooks/useI18n";
 
 // Components
 
@@ -17,12 +13,14 @@ import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
 
 export default function Settings() {
-  const tHome = useI18n("pag-home");
-
   const { gColors } = useGlobalStyles();
 
   return (
     <Container padding>
+      <View className="flex flex-row gap-4">
+        <Link href={"/"}>home</Link>
+        <Link href={"/layout_test"}>settings</Link>
+      </View>
       <Link href={"/"}>
         <Button>
           Voltar

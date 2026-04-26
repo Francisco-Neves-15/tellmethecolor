@@ -36,7 +36,7 @@ const Button = forwardRef<HTMLButtonElement, IButtonProps>(
   (
     {
       variant = "outline",
-      color = "primary",
+      color = "theme",
       size = "normal",
       underline = false,
       iconRound = false,
