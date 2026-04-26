@@ -1,0 +1,59 @@
+@import "tailwindcss";
+@config "../../tailwind.config.mjs";
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bgBase);
+  color: var(--color-text);
+  font-family: var(--font-poppins);
+}
+
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+a {
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-poppins);
+}
+
+input {
+  cursor: text;
+  font-family: var(--font-poppins);
+}
+
+span {
+  font-family: var(--font-poppins);
+}
+
+/* SCSS USAGE */
+
+/* 
+// Importing
+@use "@mixins" as mixs;
+
+tag {
+  @include mixs.flex_center;
+  
+  @include mixs.theme_light("&") {
+    background-color: white;
+    color: black;
+  } 
+  
+  @include mixs.responsive_large {
+    background-color: yellow;
+  }
+}
+
+*/

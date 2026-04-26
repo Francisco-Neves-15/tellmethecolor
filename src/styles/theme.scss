@@ -1,0 +1,54 @@
+// *-script-* as "palette-colors-dontchange" - START | Don't change
+:root {
+  --color-primary: #4f2375;
+  --color-primaryContrast: #ffffff;
+  --color-primaryAlpha: #4f237533;
+  // Typography
+  --color-link: #436fd7;
+  // Semantic
+  --color-light: #f3f3f3;
+  --color-dark: #090909;
+  --color-info: #0da4f0;
+  --color-infoAlpha: #0da4f033;
+  --color-warning: #e49b0f;
+  --color-warningAlpha: #e49b0f33;
+  --color-danger: #c21728;
+  --color-dangerAlpha: #c2172833;
+  --color-success: #127949;
+  --color-successAlpha: #12794933;
+  --color-neutral: #7f7f7f;
+  --color-neutralAlpha: #7f7f7f33;
+}
+// *-script-* as "palette-colors-dontchange" - END | Don't change
+
+// *-script-* as "palette-colors-default" - START | Default
+:root {
+  // Typography
+  --color-text: #090909;
+  --color-textSecondary: #f3f3f3;
+  // Foundation
+  --color-bgBase: #f3f3f3;
+  --color-bgBaseInverted: #090909;
+  --color-bgSecondary: #eaeaea;
+  --color-bgSecondaryInverted: #151515;
+  --color-muted: #999999;
+  --color-mutedAlpha: #99999960;
+  --color-mutedInverted: #666666;
+  --color-border: #999999;
+}
+// *-script-* as "palette-colors-default" - END | Default
+
+[data-theme-mode="dark"] {
+  // Typography
+  --color-text: #f3f3f3;
+  --color-textSecondary: #090909;
+  // Foundation
+  --color-bgBase: #090909;
+  --color-bgBaseInverted: #f3f3f3;
+  --color-bgSecondary: #151515;
+  --color-bgSecondaryInverted: #eaeaea;
+  --color-muted: #666666;
+  --color-mutedAlpha: #66666660;
+  --color-mutedInverted: #999999;
+  --color-border: #666666;
+}

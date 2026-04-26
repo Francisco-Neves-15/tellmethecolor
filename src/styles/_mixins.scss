@@ -1,0 +1,76 @@
+@use "@vars" as var;
+
+// ===== Responsive;
+
+@mixin responsive_small {
+  @media screen and (max-width: var.$breakpoint-small) {
+    @content;
+  }
+}
+
+@mixin responsive_medium {
+  @media screen and (min-width: (var.$breakpoint-small + 1)) and (max-width: var.$breakpoint-large) {
+    @content;
+  }
+}
+
+@mixin responsive_large {
+  @media screen and (min-width: (var.$breakpoint-large + 1)) {
+    @content;
+  }
+}
+
+// ===== Responsive (Layout);
+
+@mixin layout_compact {
+  @media screen and (max-width: var.$breakpoint-medium) {
+    @content;
+  }
+}
+
+@mixin layout_expanded {
+  @media screen and (min-width: (var.$breakpoint-medium + 1)) {
+    @content;
+  }
+}
+
+// ===== Theme Mode;
+
+@mixin theme_light($selector) {
+  html[data-theme-mode="light"] #{$selector} {
+    @content;
+  }
+}
+
+@mixin theme_dark($selector) {
+  html[data-theme-mode="dark"] #{$selector} {
+    @content;
+  }
+}
+
+// ===== Display: Flex;
+
+@mixin flex_center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex_row {
+  display: flex;
+  flex-direction: row;
+}
+
+@mixin flex_column {
+  display: flex;
+  flex-direction: column;
+}
+
+// ===== Others;
+
+@mixin width_full {
+  width: 100%;
+}
+@mixin height_full {
+  height: 100%;
+}
