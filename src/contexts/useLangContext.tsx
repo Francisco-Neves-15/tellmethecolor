@@ -12,8 +12,8 @@ export const LangContext = createContext({} as LangContextType);
 
 // local storage / keys
 const STORAGE_KEY_LANG = "client-lang";
-const HTML_KEY_LANG = "lang";
 const LANG_CHANGE_EVENT = "client-lang-change";
+const HTML_KEY_LANG = "lang";
 
 // fallback
 const FALLBACK_LANG_OPTION: LangOptions = "system";

@@ -41,19 +41,24 @@ span {
 
 /* 
 // Importing
-@use "@mixins" as mixs;
+@use "@mixins" as mix;
 
 tag {
-  @include mixs.flex_center;
+  @include mix.flex_center;
   
-  @include mixs.theme_light("&") {
+  @include mix.theme_light("&") {
     background-color: white;
     color: black;
   } 
   
-  @include mixs.responsive_large {
+  @include mix.screen_large {
     background-color: yellow;
   }
+  
+  @include mix.layout_expanded {
+    background-color: green;
+  }
+
 }
 
 */

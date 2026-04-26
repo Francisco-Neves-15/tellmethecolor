@@ -18,6 +18,7 @@ import "../styles/details/selection.scss";
 // Providers
 import { ThemeProvider } from "@/contexts/useThemeContext";
 import { LangProvider } from "@/contexts/useLangContext";
+import { MediaProvider } from "@/contexts/useMediaContext";
 
 // Script
 import { getThemeBootInlineScript } from "./theme-boot-script";
@@ -110,7 +111,9 @@ export default async function RootLayout({
       <body className={`min-h-dvh min-w-dvw flex flex-col`}>
         <LangProvider initialResolvedLang={initialResolvedLang as AVAILABLE_LANGCODE}>
           <ThemeProvider>
-            <main className="w-full h-full flex flex-col">{children}</main>
+            <MediaProvider>
+              <main className="w-full h-full flex flex-col">{children}</main>
+            </MediaProvider>
           </ThemeProvider>
         </LangProvider>
       </body>

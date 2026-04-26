@@ -2,10 +2,13 @@
 @use "@mixins" as mix;
 
 :root {
-  @include mix.layout_compact {
-    --ui-border-width: 2px;
+  @include mix.screen_small {
+    --ui-border-width: 1.5px;
   }
-  @include mix.layout_expanded {
+  @include mix.screen_medium {
+    --ui-border-width: 1.5px;
+  }
+  @include mix.screen_large {
     --ui-border-width: 1px;
   }
 }

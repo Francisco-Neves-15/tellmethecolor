@@ -13,6 +13,7 @@ import {
   readStoredPrimaryColors,
   readStoredThemeMode,
 } from "@/utils/read-theme-prefs";
+
 import { getResolvedThemeMode } from "@/utils/theme";
 
 // context
@@ -60,7 +61,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     initColors.colorPrimaryAlpha
   );
 
-  // Sincroniza DOM (e variáveis CSS) com o estado — sem efeitos colaterais de API aqui.
+  // Synchronizes DOM (and CSS variables) with state — no API side effects here.
   useEffect(() => {
     const root = document.documentElement;
 

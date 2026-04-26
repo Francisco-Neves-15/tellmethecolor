@@ -1,21 +1,21 @@
 @use "@vars" as var;
 
-// ===== Responsive;
+// ===== Responsive (Size);
 
-@mixin responsive_small {
-  @media screen and (max-width: var.$breakpoint-small) {
+@mixin screen_small {
+  html[media-screen-type="small"] & {
     @content;
   }
 }
 
-@mixin responsive_medium {
-  @media screen and (min-width: (var.$breakpoint-small + 1)) and (max-width: var.$breakpoint-large) {
+@mixin screen_medium {
+  html[media-screen-type="medium"] & {
     @content;
   }
 }
 
-@mixin responsive_large {
-  @media screen and (min-width: (var.$breakpoint-large + 1)) {
+@mixin screen_large {
+  html[media-screen-type="large"] & {
     @content;
   }
 }
@@ -23,13 +23,13 @@
 // ===== Responsive (Layout);
 
 @mixin layout_compact {
-  @media screen and (max-width: var.$breakpoint-medium) {
+  html[media-layout-type="compact"] & {
     @content;
   }
 }
 
 @mixin layout_expanded {
-  @media screen and (min-width: (var.$breakpoint-medium + 1)) {
+  html[media-layout-type="expanded"] & {
     @content;
   }
 }
