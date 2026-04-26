@@ -35,8 +35,8 @@ interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, IButtonProps>(
   (
     {
-      variant = "sub",
-      color = "theme",
+      variant = "outline",
+      color = "primary",
       size = "normal",
       underline = false,
       iconRound = false,
