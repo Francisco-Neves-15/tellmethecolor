@@ -9,9 +9,10 @@ import fStyles from "./style.module.scss"
 // Hooks
 import { useI18n } from "@/hooks/useI18n";
 
-// Components
-
 // Icons
+import { LuHouse } from "react-icons/lu";
+
+// Components
 import Container from "@/components/ui/Container";
 import View from "@/components/ui/View";
 import Text from "@/components/ui/Text";
@@ -32,17 +33,32 @@ export default function Home() {
       <Button variant="main" color="primary">Continuar</Button>
       <Button variant="sub">Continuar</Button>
       <Button variant="outline" color="primary">Continuar</Button>
+
+      {/* Testes de Botões */}
+
       <Link href={"/settings"}>
         <Button>
-          Configurações
+          link + button
         </Button>
       </Link>
-      <Link href={"/settings"}>
+
+      <Button>buton + text</Button>
+      <Button><LuHouse size={24} /> Color </Button>
+      
+      <Button><Text size="button">buton + text</Text></Button>
+
+      <Button>button</Button>
+      <Button color="primary" variant="outline" underline><LuHouse size={24} /> button underline</Button>
+
+      <Link href={"/settings"} style={{ textDecoration: "none" }}>
         <Button>
-          <Text size="display">Configurações</Text>
+          <Text size="display">link + button + text</Text>
         </Button>
       </Link>
-      <Link href={"/settings"}>Configurações</Link>
+
+      {/* Testes de Botões */}
+
+      <Link href={"/settings"}>link</Link>
     </Container>
   );
 }

@@ -2,11 +2,9 @@
 
 import { forwardRef } from "react";
 
-// Styles
-import useGlobalStyles from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss";
 
-type TTextSizes = "display" | "h1" | "h2" | "h3" | "body" | "caption" | "micro" | "nano";
+type TTextSizes = "display" | "h1" | "h2" | "h3" | "body" | "caption" | "micro" | "nano" | "button";
 
 interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   size: TTextSizes;
@@ -16,8 +14,7 @@ interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
 
 const Text = forwardRef<HTMLDivElement, TextProps>(
   ({ size, color = null, span = false, className, children, ...props }, ref) => {
-    const { gColors } = useGlobalStyles();
-
+    
     const classConfig: Record<TTextSizes, string> = {
       display: "textDisplay",
       h1: "textH1",
@@ -27,6 +24,7 @@ const Text = forwardRef<HTMLDivElement, TextProps>(
       caption: "textCaption",
       micro: "textMicro",
       nano: "textNano",
+      button: "textButton",
     } as const;
 
     const getClassConfig = (size: TTextSizes) => {
@@ -40,9 +38,9 @@ const Text = forwardRef<HTMLDivElement, TextProps>(
           ${fStyles.textBase}
           ${fStyles[getClassConfig(size)]}
           ${span ? fStyles.textSpan : ""}
-          ${className}
+          ${className ?? ""}
         `}
-        style={{ color: color ? color : gColors.text }}
+        style={color ? { color } : undefined}
         {...props}
       >
         {children}

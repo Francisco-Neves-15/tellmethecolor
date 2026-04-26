@@ -39,6 +39,11 @@ const fugaz = localFont({
   variable: "--font-fugaz",
 });
 
+const urbanist = localFont({
+  src: "../../public/fonts/Urbanist/Urbanist-Regular.ttf",
+  variable: "--font-urbanist",
+});
+
 // Favicon
 
 const PATH_FAVICON_LIGHT: string = "favicon/tmtc-favicon-black.ico";
@@ -99,7 +104,7 @@ export default async function RootLayout({
       dir="ltr" 
       lang={initialResolvedLang} 
       suppressHydrationWarning
-      className={`${poppins.variable} ${fugaz.variable} antialiased`}
+      className={`${poppins.variable} ${fugaz.variable} ${urbanist.variable} antialiased`}
     >
       <head>
         <Script
