@@ -1,8 +1,8 @@
-export const HTML_KEY_LAYOUT_TYPE = "media-layout-type";
-export const HTML_KEY_SCREEN_TYPE = "media-screen-type";
+export const HTML_KEY_LAYOUT_TYPE = "data-layout-type";
+export const HTML_KEY_SCREEN_TYPE = "data-screen-type";
 
 export const BREAKPOINTS = {
-  small: 500,
+  small: 600,
   large: 1200,
 } as const;
 

@@ -21,6 +21,8 @@ body {
 
 a {
   cursor: pointer;
+  text-decoration: underline;
+  color: var(--color-link);
 }
 
 button {
@@ -43,7 +45,12 @@ span {
 // Importing
 @use "@mixins" as mix;
 
+// Tag
+
 tag {
+
+  // Simple
+
   @include mix.flex_center;
   
   @include mix.theme_light("&") {
@@ -59,6 +66,12 @@ tag {
     background-color: green;
   }
 
+}
+
+// Global Variables
+
+@include mix.layout_compact {
+  --ui-border-width: 2px;
 }
 
 */

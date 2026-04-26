@@ -1,4 +1,4 @@
-import { THEME_STORAGE_KEYS } from "@/configs/theme-storage";
+import { THEME_STORAGE_KEYS, HTML_KEY_MODE } from "@/configs/theme-storage";
 
 /**
  * Runs before React hydrates: reads localStorage and applies attributes/variables
@@ -18,11 +18,7 @@ export function getThemeBootInlineScript(): string {
       storedMode === "light" || storedMode === "dark"
         ? storedMode
         : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    html.setAttribute("data-theme-mode", resolved);
-
-    var palRaw = localStorage.getItem(K.palette);
-    var palette = PALETTES.indexOf(palRaw) !== -1 ? palRaw : "default";
-    html.setAttribute("data-theme-palette", palette);
+    html.setAttribute(${JSON.stringify(HTML_KEY_MODE)}, resolved);
 
     var cp = localStorage.getItem(K.colorPrimary);
     var cc = localStorage.getItem(K.colorPrimaryContrast);

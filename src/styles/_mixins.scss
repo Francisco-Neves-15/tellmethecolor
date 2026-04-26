@@ -3,34 +3,64 @@
 // ===== Responsive (Size);
 
 @mixin screen_small {
-  html[media-screen-type="small"] & {
-    @content;
+  @if & {
+    html[data-screen-type="small"] & {
+      @content;
+    }
+  } @else {
+    html[data-screen-type="small"] {
+      @content;
+    }
   }
 }
 
 @mixin screen_medium {
-  html[media-screen-type="medium"] & {
-    @content;
+  @if & {
+    html[data-screen-type="medium"] & {
+      @content;
+    }
+  } @else {
+    html[data-screen-type="medium"] {
+      @content;
+    }
   }
 }
 
 @mixin screen_large {
-  html[media-screen-type="large"] & {
-    @content;
+  @if & {
+    html[data-screen-type="large"] & {
+      @content;
+    }
+  } @else {
+    html[data-screen-type="large"] {
+      @content;
+    }
   }
 }
 
 // ===== Responsive (Layout);
 
 @mixin layout_compact {
-  html[media-layout-type="compact"] & {
-    @content;
+  @if & {
+    html[data-layout-type="compact"] & {
+      @content;
+    }
+  } @else {
+    html[data-layout-type="compact"] {
+      @content;
+    }
   }
 }
 
 @mixin layout_expanded {
-  html[media-layout-type="expanded"] & {
-    @content;
+  @if & {
+    html[data-layout-type="expanded"] & {
+      @content;
+    }
+  } @else {
+    html[data-layout-type="expanded"] {
+      @content;
+    }
   }
 }
 

@@ -1,2 +1,13 @@
 @use "@mixins" as mix;
+@use "@vars" as var;
 
+.content {
+  position: relative;
+  @include mix.flex_center;
+}
+
+@include mix.layout_compact {
+  .content {
+    background-color: red;
+  }
+}

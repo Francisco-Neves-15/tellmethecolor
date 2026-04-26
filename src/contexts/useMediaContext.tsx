@@ -43,8 +43,8 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     if (typeof window === "undefined") return;
 
     const update = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      const wWidth = window.innerWidth;
+      const wHeight = window.innerHeight;
 
       const sWidth = window.screen.width;
       const sHeight = window.screen.height;
@@ -52,22 +52,21 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       // screen type
       let screenType: ScreenTypeOptions = "medium";
 
-      if (width <= BREAKPOINTS.small) {
+      if (wWidth <= BREAKPOINTS.small) {
         screenType = "small";
-      } else if (width <= BREAKPOINTS.large) {
+      } else if (wWidth <= BREAKPOINTS.large) {
         screenType = "medium";
       } else {
         screenType = "large";
       }
 
       // layout type
-      const layoutType: LayoutTypeOptions =
-        width <= BREAKPOINTS.large ? "compact" : "expanded";
+      const layoutType: LayoutTypeOptions = wWidth <= BREAKPOINTS.large ? "compact" : "expanded";
 
       setMediaScreenType(screenType);
       setMediaLayoutType(layoutType);
 
-      setWindowSize({ width, height });
+      setWindowSize({ width: wWidth, height: wHeight });
       setScreenSize({ width: sWidth, height: sHeight });
 
       // ===== DOM sync
@@ -77,12 +76,11 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       root.setAttribute(HTML_KEY_SCREEN_TYPE, screenType);
       root.setAttribute(HTML_KEY_LAYOUT_TYPE, layoutType);
 
-      // mesmo não usando em media query, útil pra outros cálculos
       root.style.setProperty("--breakpoint-small", `${BREAKPOINTS.small}px`);
       root.style.setProperty("--breakpoint-large", `${BREAKPOINTS.large}px`);
 
-      root.style.setProperty("--window-width", `${width}px`);
-      root.style.setProperty("--window-height", `${height}px`);
+      root.style.setProperty("--window-width", `${wWidth}px`);
+      root.style.setProperty("--window-height", `${wHeight}px`);
     };
 
     update();

@@ -21,7 +21,8 @@ import { LangProvider } from "@/contexts/useLangContext";
 import { MediaProvider } from "@/contexts/useMediaContext";
 
 // Script
-import { getThemeBootInlineScript } from "./theme-boot-script";
+import { getThemeBootInlineScript } from "../../scripts/boot_scripts/theme-boot-script";
+import { getMediaBootInlineScript } from "../../scripts/boot_scripts/media-boot-script";
 
 // Using
 import { AVAILABLE_LANGCODE, ISO_LANG_MAP } from "@/lang/main";
@@ -105,6 +106,11 @@ export default async function RootLayout({
           id="theme-boot"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: getThemeBootInlineScript() }}
+        />
+        <Script
+          id="media-boot"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: getMediaBootInlineScript() }}
         />
       </head>
 
