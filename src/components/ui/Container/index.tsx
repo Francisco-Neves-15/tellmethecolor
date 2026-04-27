@@ -2,6 +2,7 @@
 import { CSSProperties } from "react";
 
 // Components
+import Header from "@/components/ui/Header";
 import View from "@/components/ui/View"
 
 
@@ -10,6 +11,8 @@ interface IContainer {
   style?: CSSProperties;
   className?: string;
   padding?: number | boolean;
+  header?: boolean;
+  footer?: boolean;
 }
 
 const Container = ({
@@ -17,6 +20,8 @@ const Container = ({
   style,
   className,
   padding = false,
+  header = true,
+  footer = true,
 }: IContainer) => {
 
   // auto padding | has padding and is a number: use the entered value, else: use the default "16", else: don't use padding
@@ -24,6 +29,9 @@ const Container = ({
 
   return (
     <View style={{ flex: 1 }}>
+      {header && (
+        <Header/>
+      )}
       <div style={{ flex: 1, padding: paddingV, ...style }} className={className}>
         {children}
       </div>

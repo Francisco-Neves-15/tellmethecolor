@@ -12,8 +12,10 @@ import { useI18n } from "@/hooks/useI18n";
 // Components
 import Container from "@/components/ui/Container";
 import View from "@/components/ui/View";
+import Text from "@/components/ui/Text";
 
 export default function Home() {
+
   const tHome = useI18n("pag-home");
 
   const { gColors } = useGlobalStyles();
@@ -31,6 +33,7 @@ export default function Home() {
         {/* <Link href={"/layout_test/"}>Teste</Link> */}
         {/* <Link href={"/settings/"}>Setting</Link> */}
       </View>
+
     </Container>
   );
 }

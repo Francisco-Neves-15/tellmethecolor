@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 
+// forbidden, unauthorized
+
 // Icons
 import { LuTriangleAlert } from "react-icons/lu";
 
