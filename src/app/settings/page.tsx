@@ -8,7 +8,7 @@ import useGlobalStyles from "@/hooks/useGlobalStyles";
 // Components
 
 // Icons
-import Container from "@/components/ui/Container";
+import Container from "@/components/layout/Container";
 import View from "@/components/ui/View";
 import Button from "@/components/ui/Button";
 

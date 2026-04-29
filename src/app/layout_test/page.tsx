@@ -9,7 +9,7 @@ import useGlobalStyles from "@/hooks/useGlobalStyles";
 import { LuHouse } from "react-icons/lu";
 
 // Components
-import Container from "@/components/ui/Container";
+import Container from "@/components/layout/Container";
 import View from "@/components/ui/View";
 import Text from "@/components/ui/Text";
 import Button from "@/components/ui/Button";

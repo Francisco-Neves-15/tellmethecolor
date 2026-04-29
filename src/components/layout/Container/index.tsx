@@ -2,7 +2,7 @@
 import { CSSProperties } from "react";
 
 // Components
-import Header from "@/components/ui/Header";
+import Header from "@/components/layout/Header";
 import View from "@/components/ui/View"
 
 

@@ -9,12 +9,13 @@ import fStyles from "./style.module.scss"
 
 // Components
 import View from "@/components/ui/View"
-import Text from "@/components/ui/Text"
-import Button from "@/components/ui/Button"
 
 // Hooks
 import { useMedia } from "@/hooks/useMedia";
 import { useTheme } from "@/hooks/useTheme";
+
+// Internal
+import { Navbar } from "../Navbar"
 
 
 interface IHeader {
@@ -28,7 +29,7 @@ const Header = ({
 }: IHeader) => {
   const pathname = usePathname()
 
-  const { mediaLayoutType, mediaScreenType, screenWidth, screenHeight } = useMedia();
+  const { mediaLayoutType, mediaScreenType } = useMedia();
   const { resolvedThemeMode, setThemeMode } = useTheme();
 
   // Size
@@ -60,19 +61,19 @@ const Header = ({
 
   const getLogosSize = useMemo(() => {
     if (mediaScreenType === "large") {
-      return { abs: headerSize - 16, word: { width: 320, height: 0 }}
+      return { abs: headerSize - 20, word: { width: 320, height: 0 }}
     } else if (mediaScreenType === "medium") {
-      return { abs: headerSize - 16, word: { width: 240, height: 0 }}
+      return { abs: headerSize - 20, word: { width: 240, height: 0 }}
     } else {
-      return { abs: headerSize - 16, word: { width: 0, height: 0 }}
+      return { abs: headerSize - 20, word: { width: 0, height: 0 }}
     }
   }, [mediaScreenType])
 
   const logoAbsDimensions: number = getLogosSize.abs; 
-  const logoWordDimensions: { width: number, height: number } = getLogosSize.word; 
+  const logoWordDimensions: { width: number, height: number } = getLogosSize.word;
 
   return (
-    <header className={fStyles.header} style={{ height: headerSize }}>
+    <header className={`${fStyles.header} ${className}`} style={{ height: headerSize, ...style }}>
       <View className={fStyles.headerLogo}>
         <Image
           src={logoThemeAbs}
@@ -89,19 +90,9 @@ const Header = ({
           />
         )}
       </View>
-      <View style={{ flexDirection: "row" }}>
-        <Button
-          onClick={() => setThemeMode("light")}
-        >
-          Claro
-        </Button>
-        <Button
-          onClick={() => setThemeMode("dark")}
-        >
-          Escuro
-        </Button>
-      </View>
-      <Text size="body">{pathname} | {resolvedThemeMode}</Text>
+      <Navbar 
+        headerSize={headerSize} 
+      />
     </header>
   )
 }

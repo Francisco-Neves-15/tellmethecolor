@@ -10,7 +10,7 @@ import { LuTriangleAlert } from "react-icons/lu";
 import { useI18n } from "@/hooks/useI18n";
 
 // Components
-import Container from "@/components/ui/Container";
+import Container from "@/components/layout/Container";
 import View from "@/components/ui/View";
 import Text from "@/components/ui/Text";
 

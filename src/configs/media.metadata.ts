@@ -2,7 +2,7 @@ export const HTML_KEY_LAYOUT_TYPE = "data-layout-type";
 export const HTML_KEY_SCREEN_TYPE = "data-screen-type";
 
 export const BREAKPOINTS = {
-  small: 600,
+  small: 500,
   large: 1200,
 } as const;
 

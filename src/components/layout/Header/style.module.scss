@@ -1,0 +1,23 @@
+@use "@mixins" as mix;
+
+.header {
+  z-index: 1000;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  // background-color: var(--color-bgSecondary);
+  // border-radius: 0 0 16px 16px;
+  // border-bottom: var(--color-border) 1px solid;
+  // box-shadow: 0 -2px 16px var(--color-border);
+}
+
+.headerLogo {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+}
