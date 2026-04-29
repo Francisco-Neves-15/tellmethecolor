@@ -1,6 +1,7 @@
 @use "@mixins" as mix;
 
 .header {
+  height: var(--header-size);
   z-index: 1000;
   position: relative;
   display: flex;
@@ -20,4 +21,35 @@
   justify-content: flex-start;
   align-items: center;
   gap: 16px;
+}
+
+// Abs
+
+.headerLogoAbs {
+  display: none;
+  aspect-ratio: 1;
+};
+.headerLogoAbsDark{ display: none; };
+.headerLogoAbsLight{ display: none; };
+
+@include mix.theme_light(".headerLogoAbsDark") {
+  display: flex;
+}
+@include mix.theme_dark(".headerLogoAbsLight") {
+  display: flex;
+}
+
+// Word
+
+.headerLogoWord {
+  display: none;
+}
+.headerLogoWordDark{ display: none; };
+.headerLogoWordLight{ display: none; };
+
+@include mix.theme_light(".headerLogoWordDark") {
+  display: flex;
+}
+@include mix.theme_dark(".headerLogoWordLight") {
+  display: flex;
 }

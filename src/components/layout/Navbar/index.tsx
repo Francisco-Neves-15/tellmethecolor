@@ -1,11 +1,9 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 
 // Icons
-import { LuMenu, LuX } from "react-icons/lu";
+import { LuMenu, LuX, LuSun, LuMoon, LuMonitorSmartphone } from "react-icons/lu";
 
 // Styles
 import fStyles from "./style.module.scss"
@@ -16,10 +14,12 @@ import Text from "@/components/ui/Text"
 import Button from "@/components/ui/Button"
 
 // Hooks
+// Hooks
+import { useI18n } from "@/hooks/useI18n";
 import { useMedia } from "@/hooks/useMedia";
 import { useTheme } from "@/hooks/useTheme";
 
-// Types
+// Configs
 import { LayoutTypeOptions } from "@/configs/media.metadata";
 
 
@@ -30,20 +30,19 @@ interface INavbar {
   style?: CSSProperties;
   className?: string;
   direction?: INavbarDir | null;
-  headerSize?: number;
 }
 
 export const Navbar = ({
   style,
   className,
   direction = null,
-  headerSize,
 }: INavbar) => {
 
   const pathname = usePathname();
+  const tDataSettings = useI18n("data-settings");
 
   const { mediaLayoutType, mediaScreenType } = useMedia();
-  const { resolvedThemeMode, setThemeMode } = useTheme();
+  const { resolvedThemeMode, themeMode, setThemeMode } = useTheme();
 
   const [currentLayout, setCurrentLayout] = useState<LayoutTypeOptions | null>(null)
 
@@ -95,9 +94,11 @@ export const Navbar = ({
     };
   }, [mediaLayoutType])
 
-  // useEffect(() => {
-  //   console.log(JSON.stringify(navbarExpanded, null, 2))
-  // }, [navbarExpanded])
+  // Handle's
+  const handleChangeTheme = () => {
+    if (resolvedThemeMode === "light") setThemeMode("dark");
+    else setThemeMode("light");
+  }
 
   // Render's
 
@@ -105,11 +106,23 @@ export const Navbar = ({
   const NavBarList = () => {
     return (
       <div className={`${resolvedListDirectionClassName}`}>
-        <a href="#">Item 1</a>
-        <a href="#">Item 2</a>
-        <a href="#">Item 3</a>
-        <a href="#">Item 4</a>
-        <a href="#">Item 5</a>
+        <View className="w-full flex flex-row justify-between items-center">
+          {isCompact && (
+            <Text size="h3">{tDataSettings["th-mode-title"]}</Text>
+          )}
+          <Button
+            icon={!isCompact}
+            variant={!isCompact ? "ghost" : "outline"}
+            onClick={handleChangeTheme}
+          >
+            {isCompact && (
+              <Text size="button">
+                {`${tDataSettings[`th-mode-opt-${resolvedThemeMode}`]}`}
+              </Text>
+            )}
+            {resolvedThemeMode === "light" ? <LuSun size={32} /> : <LuMoon size={32} />}
+          </Button>
+        </View>
       </div>
     )
   }
@@ -118,7 +131,8 @@ export const Navbar = ({
     <nav
       aria-expanded={navbarExpanded}
       aria-controls="main-navbar"
-      className={`${fStyles.navbar}`}
+      className={`${fStyles.navbar} ${className}`} 
+      style={{ ...style }}
     >
       {isCompact && (
         <Button
@@ -140,7 +154,7 @@ export const Navbar = ({
             <View
               className={`${fStyles.navbarCompactedContent} ${navbarExpanded ? fStyles.open : ""}`}
             >
-              <View className={`${fStyles.navbarHeader}`} style={{ height: headerSize }}>
+              <View className={`${fStyles.navbarHeader}`}>
                 <Button
                   ref={closeButtonRef}
                   icon

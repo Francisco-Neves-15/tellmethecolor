@@ -50,6 +50,7 @@
 
 .navbarHeader {
   width: 100%;
+  height: var(--header-size);
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -60,10 +61,12 @@
 //
 
 .navbarListCol {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
+  gap: 8px;
 }
 
 .navbarListRow {
@@ -71,5 +74,5 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  height: 100%;
+  gap: 4px;
 }
