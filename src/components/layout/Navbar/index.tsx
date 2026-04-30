@@ -38,7 +38,7 @@ export const Navbar = ({
   direction = null,
 }: INavbar) => {
 
-  const pathname = usePathname();
+  // const pathname = usePathname();
   const tDataSettings = useI18n("data-settings");
 
   const { mediaLayoutType, mediaScreenType } = useMedia();
@@ -83,16 +83,16 @@ export const Navbar = ({
       closeButtonRef.current?.focus();
     } else {
       openButtonRef.current?.focus();
-    }
-  }, [navbarExpanded])
+    };
+  }, [navbarExpanded]);
 
   // Autoclose
   useEffect(() => {
     if (mediaLayoutType !== currentLayout) {
       setCurrentLayout(mediaLayoutType);
-      setNavbarExpanded(false)
+      setNavbarExpanded(false);
     };
-  }, [mediaLayoutType])
+  }, [mediaLayoutType]);
 
   // Handle's
   const handleChangeTheme = () => {
