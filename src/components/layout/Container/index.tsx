@@ -6,6 +6,7 @@ import Header from "@/components/layout/Header";
 import View from "@/components/ui/View"
 
 
+
 interface IContainer {
   children: React.ReactNode;
   style?: CSSProperties;
@@ -35,6 +36,9 @@ const Container = ({
       <div style={{ flex: 1, padding: paddingV, ...style }} className={className}>
         {children}
       </div>
+      {footer && (
+        <></>
+      )}
     </View>
   )
 }
