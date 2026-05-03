@@ -10,9 +10,9 @@ import { LuHouse } from "react-icons/lu";
 
 // Components
 import Container from "@/components/layout/Container";
-import View from "@/components/ui/View";
-import Text from "@/components/ui/Text";
-import Button from "@/components/ui/Button";
+import View from "@/components/ui/own/View";
+import Text from "@/components/ui/own/Text";
+import Button from "@/components/ui/own/Button";
 
 export default function Home() {
   const { gColors } = useGlobalStyles();

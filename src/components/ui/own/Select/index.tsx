@@ -17,11 +17,11 @@ import useGlobalStyles from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss"
 
 // Components
-import View from "@/components/ui/View"
-import Text from "@/components/ui/Text"
-import Button, { TButtonVariants } from "@/components/ui/Button"
-import Input from "@/components/ui/Input"
-import DivisorLine from "@/components/ui/DivisorLine"
+import View from "@/components/ui/own/View"
+import Text from "@/components/ui/own/Text"
+import Button, { TButtonVariants } from "@/components/ui/own/Button"
+import Input from "@/components/ui/own/Input"
+import DivisorLine from "@/components/ui/own/DivisorLine"
 
 // Hooks
 import { useI18n } from "@/hooks/useI18n";

@@ -11,10 +11,10 @@ import { useI18n } from "@/hooks/useI18n";
 
 // Components
 import Container from "@/components/layout/Container";
-import View from "@/components/ui/View";
-import Text from "@/components/ui/Text";
-import { Select, TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/Select";
-import Button from "@/components/ui/Button";
+import View from "@/components/ui/own/View";
+import Text from "@/components/ui/own/Text";
+import { Select, TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/own/Select";
+import Button from "@/components/ui/own/Button";
 import { LuHouse } from "react-icons/lu";
 
 
