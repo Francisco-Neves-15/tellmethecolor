@@ -41,16 +41,20 @@
   background-color: var(--color-bgSecondary);
   border: var(--ui-border-width) var(--color-border) solid;
   border-radius: 16px;
-  @include mix.screen_small { width: 75dvw; }
-  @include mix.screen_medium { width: clamp(360px, 50dvw, 720px); }
-  @include mix.screen_large { width: clamp(360px, 50dvw, 720px); }
   @include mix.screen_small { 
+    width: 80dvw;
     min-height: 25dvh;
     height: auto;
     max-height: 80dvh;
   }
-  @include mix.screen_medium { height: clamp(360px, 50dvh, 720px); }
-  @include mix.screen_large { height: clamp(360px, 50dvh, 720px); }
+  @include mix.screen_medium { 
+    width: clamp(360px, 50dvw, 720px);
+    height: clamp(360px, 50dvh, 720px);
+  }
+  @include mix.screen_large { 
+    width: clamp(360px, 50dvw, 720px); 
+    height: clamp(360px, 50dvh, 720px);
+  }
   opacity: 0;
   transition: opacity 250ms ease;
 }
@@ -63,12 +67,14 @@
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
-  gap: 4px;
+  align-items: center;
+  padding: 16px;
+  @include mix.screen_small { gap: 4px; }
+  @include mix.screen_medium { gap: 8px; }
+  @include mix.screen_large { gap: 8px; }
 }
 
 .modalContentListItem {
@@ -76,7 +82,9 @@
   justify-content: flex-start;
   width: 100%;
   height: auto;
-  padding: 16px 0;
+  padding: 8px 8px;
+  border-radius: 8px;
+  transition: opacity 250ms ease-in-out;
   &:active {
     opacity: 0.5;
   }
@@ -94,17 +102,15 @@
   background-color: var(--color-bgSecondary);
   border: var(--ui-border-width) var(--color-border) solid;
   border-radius: 8px;
-  min-width: 120px;
+  min-width: 160px;
+  width: auto;
+  max-width: 360px;
   opacity: 0;
   transition: opacity 250ms ease;
 }
 .dropdownContent.open {
   opacity: 1;
 }
-.dropdownContent.TopLeft { }
-.dropdownContent.TopRight { }
-.dropdownContent.BottomLeft { }
-.dropdownContent.BottomRight { }
 
 .dropdownContentList {
   width: 100%;
@@ -114,7 +120,8 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  padding: 8px;
   gap: 4px;
 }
 
@@ -123,6 +130,9 @@
   justify-content: flex-start;
   width: 100%;
   height: auto;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: opacity 250ms ease-in-out;
   &:active {
     opacity: 0.5;
   }

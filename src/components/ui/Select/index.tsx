@@ -21,11 +21,17 @@ import View from "@/components/ui/View"
 import Text from "@/components/ui/Text"
 import Button, { TButtonVariants } from "@/components/ui/Button"
 import Input from "@/components/ui/Input"
+import DivisorLine from "@/components/ui/DivisorLine"
 
 // Hooks
 import { useI18n } from "@/hooks/useI18n";
 import { useMedia } from "@/hooks/useMedia";
 
+// Utils
+import { throttle } from "@/utils/geral";
+
+// Dropdown
+import { calculateDropdown } from "./select.dropdown.calcs";
 
 
 
@@ -40,8 +46,12 @@ interface IListSelect {
 
 export type TSelectItems = IListSelect | number | string;
 type TSelectVariant = TButtonVariants;
-type TSelectBehavoir = "adapt" | "dropdown" | "modal";
-type TDropdownPosition = "adapt" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
+type TResolvedBehavoir = "dropdown" | "modal";
+type TSelectBehavoir = "adapt" | TResolvedBehavoir;
+
+export type TResolvedPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+export type TDropdownPosition = "adapt" | "top" | "bottom" | TResolvedPosition;
 
 // Ref Control
 type TShowOptions = {
@@ -111,6 +121,7 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   defaultValueIdOrIndex = null,
   placeholder,
   behavoir = "adapt",
+  dropdownPosition = "adapt",
   fixTexts,
   // Styles
   boxVariant = "sub",
@@ -124,15 +135,21 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   const tCommon = useI18n("common");
   const { gColors } = useGlobalStyles();
 
-  const { mediaLayoutType, mediaScreenType } = useMedia();
+  const { mediaScreenType } = useMedia();
 
-  // For Dropdown
-
+  // For Select
+  
   const [state, setState] = useState<TState>({
     open: false,
     mounted: false,
     runtimeBehavior: null
   });
+  
+  // For Dropdown
+  const [dropdownMeta, setDropdownMeta] = useState<{
+    position: TResolvedPosition;
+    style: CSSProperties;
+  } | null>(null);
 
   useImperativeHandle(ref, () => ({
     open: (options?: TShowOptions) => open(options),
@@ -143,6 +160,9 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   // Button's Ref
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Dropdown Ref
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Ui
   const resolvedPlaceholder = placeholder ? placeholder : tCommon["common-select"];
@@ -169,6 +189,14 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   // Toggle
 
   const open = (options?: TShowOptions) => {
+
+    if (options?.behavior === "dropdown" && hideButton) {
+      console.error(
+        `DEVs: Cannot open Select with behavior="dropdown" when hideButton=true. Dropdown will not be rendered.`
+      );
+      return;
+    }
+
     setState(prev => ({
       ...prev,
       open: true,
@@ -210,10 +238,10 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   }, [state.open]);
 
   // Autoclose
-  useEffect(() => {
-    if (isSmall) close();
-    if (!isSmall) close();
-  }, [mediaScreenType]);
+  // useEffect(() => {
+  //   if (isSmall) close();
+  //   if (!isSmall) close();
+  // }, [mediaScreenType]);
 
   // Auto Select if "defaultValue"
   useEffect(() => {
@@ -242,6 +270,57 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
     }
 
   }, [defaultValueIdOrIndex, items]);
+
+  // Auto Calc for the Dropdown
+  useEffect(() => {
+    if (!state.open || isModal || !isDropdown) return;
+
+    if (hideButton) {
+      console.warn("Dropdown calculation skipped: hideButton is true.");
+      return;
+    }
+
+    const handler = throttle(() => {
+      calculateDropdown({ openButtonRef, dropdownPosition, setDropdownMeta });
+    }, 100);
+
+    handler();
+
+    window.addEventListener("resize", handler);
+    window.addEventListener("scroll", handler, true);
+
+    return () => {
+      window.removeEventListener("resize", handler);
+      window.removeEventListener("scroll", handler, true);
+    };
+  }, [state.open]);
+
+  // Click's Controls
+  useEffect(() => {
+    if (!state.open || isModal || !isDropdown) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      const buttonEl = openButtonRef.current;
+      const dropdownEl = dropdownRef.current;
+
+      if (!buttonEl || !dropdownEl) return;
+
+      const clickedInsideButton = buttonEl.contains(target);
+      const clickedInsideDropdown = dropdownEl.contains(target);
+
+      if (!clickedInsideButton && !clickedInsideDropdown) {
+        close();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [state.open, isDropdown, isModal]);
 
   // Current Showing
   const currentDisplayText = useMemo(() => {
@@ -292,7 +371,6 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
           >
             <LuChevronDown size={24} color={gColors.text} />
           </View>
-          {/* Dropdown */}
         </Button>
       )}
 
@@ -309,8 +387,9 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
               >
                 <View className={`${fStyles.modalContentList}`}>
                   {items.map((value, index, array) => (
-                    <View key={`${index}-list-item`} className="w-full">
+                    <>
                       <button
+                        key={`${index}-list-item-button`}
                         className={`${fStyles.modalContentListItem} ${modalStyles?.listItemClassName}`}
                         style={{ ...modalStyles?.listItemStyle }}
                         onClick={() => onSelectValue(value)}
@@ -323,24 +402,33 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
                           value.labelList
                         )}
                       </button>
-                      {(index + 1) !== array.length && 
-                        <div style={{ width: "100%", height: 1, backgroundColor: gColors.border, borderRadius: 4 }}></div>
-                      }
-                    </View>
+                      <DivisorLine key={`${index}-list-item-dl`} show={(index + 1) !== array.length} />
+                    </>
                   ))}
                 </View>
               </View>
             </>
           )}
-          {isDropdown && (
+          {isDropdown && dropdownMeta && (
             <View
-              className={`${fStyles.dropdownContent} ${dropdownStyles?.className} ${state.open ? fStyles.open : ""}`} 
-              style={{ ...dropdownStyles?.style }}
+              ref={dropdownRef}
+              className={`
+                ${fStyles.dropdownContent} 
+                ${fStyles[dropdownMeta.position]}
+                ${dropdownStyles?.className} 
+                ${state.open ? fStyles.open : ""}
+              `} 
+              style={{
+                position: "fixed",
+                ...dropdownMeta.style,
+                ...dropdownStyles?.style
+              }}
             >
               <View className={`${fStyles.dropdownContentList}`}>
                 {items.map((value, index, array) => (
-                  <View key={`${index}-list-item`} className="w-full">
+                  <>
                     <button
+                      key={`${index}-list-item-button`}
                       className={`${fStyles.dropdownContentListItem} ${dropdownStyles?.listItemClassName}`}
                       style={{ ...dropdownStyles?.listItemStyle }}
                       onClick={() => onSelectValue(value)}
@@ -353,10 +441,8 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
                         value.labelList
                       )}
                     </button>
-                    {(index + 1) !== array.length && 
-                      <div style={{ width: "100%", height: 1, backgroundColor: gColors.border, borderRadius: 4 }}></div>
-                    }
-                  </View>
+                    <DivisorLine key={`${index}-list-item-dl`} show={(index + 1) !== array.length} />
+                  </>
                 ))}
               </View>
             </View>

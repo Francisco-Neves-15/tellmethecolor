@@ -52,14 +52,59 @@ export default function Home() {
   return (
     <Container padding header={false}>
 
-      <Select
-        items={test2lista}
-        value={test2}
-        onChangeValue={(i) => {
-          setTest2(i);
-        }}
-        behavoir="adapt"
-      />
+      <View className="w-full h-full bg-warning/20 flex flex-center" style={{ position: "relative" }}>
+
+        <View style={{ position: "absolute", top: 0, left: 0 }}>
+          <Select
+            boxStyles={{ className: "bg-danger" }}
+            items={test2lista}
+            value={test2}
+            onChangeValue={(i) => {
+              setTest2(i);
+            }}
+            behavoir="adapt"
+          />
+        </View>
+
+        <View style={{ position: "absolute", top: 0, right: 0 }}>
+          <Select
+            boxStyles={{ className: "bg-danger" }}
+            items={test2lista}
+            value={test2}
+            onChangeValue={(i) => {
+              setTest2(i);
+            }}
+            behavoir="adapt"
+          />
+        </View>
+
+        <View style={{ position: "absolute", bottom: 0, left: 0 }}>
+          <Select
+            boxStyles={{ className: "bg-danger" }}
+            items={test2lista}
+            value={test2}
+            onChangeValue={(i) => {
+              setTest2(i);
+            }}
+            behavoir="adapt"
+          />
+        </View>
+
+        <View style={{ position: "absolute", bottom: 0, right: 0 }}>
+          <Select
+            boxStyles={{ className: "bg-danger" }}
+            items={test2lista}
+            value={test2}
+            onChangeValue={(i) => {
+              setTest2(i);
+            }}
+            behavoir="adapt"
+          />
+        </View>
+
+
+      </View>
+
 
       <Button
         onClick={() => dropdownTest2Ref.current?.open({ behavior: "modal" })}
