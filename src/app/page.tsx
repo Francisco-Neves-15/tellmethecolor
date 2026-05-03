@@ -52,9 +52,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!test2) return;
-    {selectValueIsPrimitive(test2) ? 
-      console.log(`Selected: ${test2}`)
-      :
+    {!selectValueIsPrimitive(test2) && 
       console.log(`Selected: ${test2}`)
     }
   }, [test2])
@@ -66,7 +64,6 @@ export default function Home() {
 
         <View style={{ position: "absolute", top: 0, left: 0 }}>
           <Select
-            search
             boxStyles={{ className: "bg-danger" }}
             items={test2lista}
             value={test2}
