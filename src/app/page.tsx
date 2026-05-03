@@ -13,7 +13,7 @@ import { useI18n } from "@/hooks/useI18n";
 import Container from "@/components/layout/Container";
 import View from "@/components/ui/View";
 import Text from "@/components/ui/Text";
-import { Select, TSelectItems, ISelectRef } from "@/components/ui/Select";
+import { Select, TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
 import { LuHouse } from "react-icons/lu";
 
@@ -45,9 +45,19 @@ export default function Home() {
   ]
   const dropdownTest2Ref = useRef<ISelectRef>(null);
   const [test2, setTest2] = useState<TSelectItems | null>(null);
+
   useEffect(() => {
     console.log(`Selected: ${test}`);
   }, [test])
+
+  useEffect(() => {
+    if (!test2) return;
+    {selectValueIsPrimitive(test2) ? 
+      console.log(`Selected: ${test2}`)
+      :
+      console.log(`Selected: ${test2}`)
+    }
+  }, [test2])
 
   return (
     <Container padding header={false}>
@@ -56,13 +66,14 @@ export default function Home() {
 
         <View style={{ position: "absolute", top: 0, left: 0 }}>
           <Select
+            search
             boxStyles={{ className: "bg-danger" }}
             items={test2lista}
             value={test2}
             onChangeValue={(i) => {
               setTest2(i);
             }}
-            behavoir="adapt"
+            behavoir="dropdown"
           />
         </View>
 
@@ -113,6 +124,7 @@ export default function Home() {
       </Button>
       <Select
         ref={dropdownTest2Ref}
+        search
         hideButton
         items={[1,2,3,4,5,2,3,4,5,2,3,4,5,2,3,4,5,2,3,4,5]}
         value={test}
