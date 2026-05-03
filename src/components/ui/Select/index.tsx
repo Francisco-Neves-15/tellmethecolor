@@ -19,7 +19,7 @@ import fStyles from "./style.module.scss"
 // Components
 import View from "@/components/ui/View"
 import Text from "@/components/ui/Text"
-import Button from "@/components/ui/Button"
+import Button, { TButtonVariants } from "@/components/ui/Button"
 import Input from "@/components/ui/Input"
 
 // Hooks
@@ -31,45 +31,47 @@ import { useMedia } from "@/hooks/useMedia";
 
 // Types & Interfaces
 
-interface IListDropdown {
+interface IListSelect {
   value: unknown;
   labelBox?: string;
   labelList?: string | React.ReactNode;
   id: string;
 }
 
-export type TDropdownItems = IListDropdown | number | string;
-type TDropdownVariant = "primary";
-type TDropdownBehavoir = "adapt" | "dropdown" | "modal";
+export type TSelectItems = IListSelect | number | string;
+type TSelectVariant = TButtonVariants;
+type TSelectBehavoir = "adapt" | "dropdown" | "modal";
+type TDropdownPosition = "adapt" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
 // Ref Control
 type TShowOptions = {
-  behavior?: TDropdownBehavoir;
+  behavior?: TSelectBehavoir;
 };
 
-export interface ISelectDropdownRef {
-  show: (options?: TShowOptions) => void;
-  hide: () => void;
-  toggle: () => void;
+export interface ISelectRef {
+  open: (options?: TShowOptions) => void;
+  close: () => void;
+  toggle: (options?: TShowOptions) => void;
 }
 
 type TState = {
   open: boolean;
   mounted: boolean;
-  runtimeBehavior: TDropdownBehavoir | null;
+  runtimeBehavior: TSelectBehavoir | null;
 };
 
 // Component
 
-interface ISelectDropdown {
-  items: TDropdownItems[];
-  value: TDropdownItems | null;
-  onChangeValue: (item: TDropdownItems) => void;
+interface ISelect {
+  items: TSelectItems[];
+  value: TSelectItems | null;
+  onChangeValue: (item: TSelectItems) => void;
   search?: boolean;
   defaultValueIdOrIndex?: string | number | null;
   placeholder?: string;
   hideButton?: boolean;
-  behavoir?: TDropdownBehavoir;
+  behavoir?: TSelectBehavoir;
+  dropdownPosition?: TDropdownPosition;
   // Fixs Values (Suffix's and Prefix's)
   fixTexts?: {
     boxSuffix?: string | null;
@@ -78,7 +80,7 @@ interface ISelectDropdown {
     listPrefix?: string | null;
   };
   // Styles
-  boxVariant?: TDropdownVariant;
+  boxVariant?: TSelectVariant;
   boxStyles?: {
     style?: CSSProperties;
     className?: string;
@@ -86,23 +88,23 @@ interface ISelectDropdown {
   modalStyles?: {
     style?: CSSProperties;
     className?: string;
+    listItemStyle?: CSSProperties;
+    listItemClassName?: string;
   };
   dropdownStyles?: {
     style?: CSSProperties;
     className?: string;
-  };
-  listItemStyles?: {
-    style?: CSSProperties;
-    className?: string;
+    listItemStyle?: CSSProperties;
+    listItemClassName?: string;
   };
 };
 
 // Util
-function valueIsPrimitive(item: TDropdownItems): item is string | number {
+export function selectValueIsPrimitive(item: TSelectItems): item is string | number {
   return typeof item === "string" || typeof item === "number";
 }
 
-export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
+export const Select = forwardRef<ISelectRef, ISelect>(({
   items = [],
   value,
   onChangeValue,
@@ -111,11 +113,10 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
   behavoir = "adapt",
   fixTexts,
   // Styles
-  boxVariant = "primary",
+  boxVariant = "sub",
   boxStyles,
   modalStyles,
   dropdownStyles,
-  listItemStyles,
   hideButton = false,
 }, ref) => {
 
@@ -134,9 +135,9 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
   });
 
   useImperativeHandle(ref, () => ({
-    show: (options?: TShowOptions) => open(options),
-    hide: () => close(),
-    toggle: () => toggle()
+    open: (options?: TShowOptions) => open(options),
+    close: () => close(),
+    toggle: (options?: TShowOptions) => toggle(options)
   }));
 
   // Button's Ref
@@ -194,9 +195,9 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
     }));
   };
 
-  const toggle = () => {
+  const toggle = (options?: TShowOptions) => {
     if (state.open) close();
-    else open();
+    else open(options);
   };
 
   // Autofocus on buttons
@@ -219,10 +220,10 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
     if (defaultValueIdOrIndex === null || defaultValueIdOrIndex === undefined) return;
     if (!items.length) return;
 
-    let selectedItem: TDropdownItems | undefined;
+    let selectedItem: TSelectItems | undefined;
 
     // Primitive List
-    if (valueIsPrimitive(items[0])) {
+    if (selectValueIsPrimitive(items[0])) {
       if (typeof defaultValueIdOrIndex === "number") {
         selectedItem = items[defaultValueIdOrIndex];
       } else {
@@ -231,7 +232,7 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
       }
     } else {
       // Obj's List
-      selectedItem = (items as IListDropdown[]).find(
+      selectedItem = (items as IListSelect[]).find(
         item => item.id === defaultValueIdOrIndex
       );
     };
@@ -246,13 +247,24 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
   const currentDisplayText = useMemo(() => {
     if (!value) return resolvedPlaceholder;
     let final: unknown;
-    if (valueIsPrimitive(value)) {
+    if (selectValueIsPrimitive(value)) {
       final = value;
     } else {
       final = value.labelBox ?? value.labelList ?? value.value ?? value.id;
     };
     return String(final);
   }, [value]);
+
+  // On Select Hidden
+  const onSelectValue = (value: TSelectItems) => {
+    onChangeValue(value);
+    close();
+    // DEBUG
+    selectValueIsPrimitive(value) ?
+      console.log(value)
+      :
+      console.log(`${value.id} ${value.labelBox} ${value.labelList} ${value.value}`)
+  }
 
   useEffect(() => {
     console.log(state.open)
@@ -265,7 +277,7 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
       {!hideButton && (
         <Button
           ref={openButtonRef}
-          variant="outline"
+          variant={boxVariant}
           className={`${fStyles.boxContainer} ${boxStyles?.className}`} 
           style={{ ...boxStyles?.style }}
           onClick={toggle}
@@ -280,6 +292,7 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
           >
             <LuChevronDown size={24} color={gColors.text} />
           </View>
+          {/* Dropdown */}
         </Button>
       )}
 
@@ -296,14 +309,13 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
               >
                 <View className={`${fStyles.modalContentList}`}>
                   {items.map((value, index, array) => (
-                    <View className="w-full">
+                    <View key={`${index}-list-item`} className="w-full">
                       <button
-                        key={`${index}-list-item`}
-                        className={`${fStyles.modalContentListItem} ${listItemStyles?.className}`}
-                        style={{ ...listItemStyles?.style }}
-                        onClick={() => console.log(`${index}: ${value}`)}
+                        className={`${fStyles.modalContentListItem} ${modalStyles?.listItemClassName}`}
+                        style={{ ...modalStyles?.listItemStyle }}
+                        onClick={() => onSelectValue(value)}
                       >
-                        {valueIsPrimitive(value) ? (
+                        {selectValueIsPrimitive(value) ? (
                           <Text size="body">{String(value)}</Text>
                         ) : typeof value.labelList === "string" ? (
                           <Text size="body">{value.labelList}</Text>
@@ -320,6 +332,35 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
               </View>
             </>
           )}
+          {isDropdown && (
+            <View
+              className={`${fStyles.dropdownContent} ${dropdownStyles?.className} ${state.open ? fStyles.open : ""}`} 
+              style={{ ...dropdownStyles?.style }}
+            >
+              <View className={`${fStyles.dropdownContentList}`}>
+                {items.map((value, index, array) => (
+                  <View key={`${index}-list-item`} className="w-full">
+                    <button
+                      className={`${fStyles.dropdownContentListItem} ${dropdownStyles?.listItemClassName}`}
+                      style={{ ...dropdownStyles?.listItemStyle }}
+                      onClick={() => onSelectValue(value)}
+                    >
+                      {selectValueIsPrimitive(value) ? (
+                        <Text size="caption">{String(value)}</Text>
+                      ) : typeof value.labelList === "string" ? (
+                        <Text size="caption">{value.labelList}</Text>
+                      ) : (
+                        value.labelList
+                      )}
+                    </button>
+                    {(index + 1) !== array.length && 
+                      <div style={{ width: "100%", height: 1, backgroundColor: gColors.border, borderRadius: 4 }}></div>
+                    }
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </>
       )}
 
@@ -327,4 +368,4 @@ export const SelectDropdown = forwardRef<ISelectDropdownRef, ISelectDropdown>(({
   )
 });
 
-SelectDropdown.displayName = "SelectDropdown";
+Select.displayName = "Select";

@@ -13,7 +13,7 @@ import { useI18n } from "@/hooks/useI18n";
 import Container from "@/components/layout/Container";
 import View from "@/components/ui/View";
 import Text from "@/components/ui/Text";
-import { SelectDropdown, TDropdownItems, ISelectDropdownRef } from "@/components/ui/SelectDropdown";
+import { Select, TSelectItems, ISelectRef } from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
 import { LuHouse } from "react-icons/lu";
 
@@ -25,12 +25,12 @@ export default function Home() {
 
   const { gColors } = useGlobalStyles();
 
-  const [test, setTest] = useState<TDropdownItems | null>(null);
+  const [test, setTest] = useState<TSelectItems | null>(null);
   useEffect(() => {
     console.log(`Selected: ${JSON.stringify(test, null, 2)}`);
   }, [test])
 
-  const test2lista: TDropdownItems[] = [
+  const test2lista: TSelectItems[] = [
     { id: "0", value: "myVal0", labelList: <><LuHouse/><Text size="body">list0</Text></>, labelBox: "box0" },
     { id: "1", value: "myVal1", labelList: <Text size="body">list1</Text>, labelBox: "box1" },
     { id: "2", value: "myVal2", labelList: <Text size="body">list2</Text>, labelBox: "box2" },
@@ -43,32 +43,33 @@ export default function Home() {
     { id: "9", value: "myVal9", labelList: <Text size="body">list8</Text>, labelBox: "box8" },
     { id: "10", value: "myVal10", labelList: <Text size="body">list10</Text>, labelBox: "box10" },
   ]
-  const dropdownTest2Ref = useRef<ISelectDropdownRef>(null);
-  const [test2, setTest2] = useState<TDropdownItems | null>(null);
+  const dropdownTest2Ref = useRef<ISelectRef>(null);
+  const [test2, setTest2] = useState<TSelectItems | null>(null);
   useEffect(() => {
-    console.log(`Selected: ${JSON.stringify(test, null, 2)}`);
+    console.log(`Selected: ${test}`);
   }, [test])
 
   return (
     <Container padding header={false}>
 
-      <SelectDropdown
-        items={[1,2,3,4,5,2,3,4,5,2,3,4,5,2,3,4,5,2,3,4,5]}
-        value={test}
+      <Select
+        items={test2lista}
+        value={test2}
         onChangeValue={(i) => {
-          setTest(i);
+          setTest2(i);
         }}
+        behavoir="adapt"
       />
 
       <Button
-        onClick={() => dropdownTest2Ref.current?.toggle()}
+        onClick={() => dropdownTest2Ref.current?.open({ behavior: "modal" })}
       >
         Abrir
       </Button>
-      <SelectDropdown
+      <Select
         ref={dropdownTest2Ref}
         hideButton
-        items={test2lista}
+        items={[1,2,3,4,5,2,3,4,5,2,3,4,5,2,3,4,5,2,3,4,5]}
         value={test}
         onChangeValue={(i) => {
           setTest(i);

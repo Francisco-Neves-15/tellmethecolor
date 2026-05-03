@@ -16,8 +16,15 @@
   opacity: 1;
 }
 
-// Box
+// Wrapper
+// .wrapperContent {
+//   @include mix.flex_center;
+//   @include mix.flex_row;
+//   background-color: red;
+//   position: relative;
+// }
 
+// Box
 .boxContainer {
   @include mix.flex_center;
   @include mix.flex_row;
@@ -70,6 +77,52 @@
   width: 100%;
   height: auto;
   padding: 16px 0;
+  &:active {
+    opacity: 0.5;
+  }
+  @include mix.layout_expanded {
+    &:hover {
+      background-color: var(--color-neutralAlpha);
+    }
+  }
+}
+
+// Dropdown
+.dropdownContent {
+  z-index: 1001;
+  position: absolute;
+  background-color: var(--color-bgSecondary);
+  border: var(--ui-border-width) var(--color-border) solid;
+  border-radius: 8px;
+  min-width: 120px;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+.dropdownContent.open {
+  opacity: 1;
+}
+.dropdownContent.TopLeft { }
+.dropdownContent.TopRight { }
+.dropdownContent.BottomLeft { }
+.dropdownContent.BottomRight { }
+
+.dropdownContentList {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.dropdownContentListItem {
+  @include mix.flex_center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
   &:active {
     opacity: 0.5;
   }
