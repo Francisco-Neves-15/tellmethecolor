@@ -13,7 +13,7 @@ import { useI18n } from "@/hooks/useI18n";
 import Container from "@/components/layout/Container";
 import View from "@/components/ui/own/View";
 import Text from "@/components/ui/own/Text";
-import { Select, TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/own/Select";
+import Select, { TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/own/Select";
 import Button from "@/components/ui/own/Button";
 import { LuHouse } from "react-icons/lu";
 
@@ -58,7 +58,7 @@ export default function Home() {
   }, [test2])
 
   return (
-    <Container padding header={false}>
+    <Container padding header={true}>
 
       <input type="range" name="" id="" />
 
@@ -79,7 +79,7 @@ export default function Home() {
             boxStyles={{ className: "bg-danger" }}
             items={test2lista}
             value={test2}
-            onChangeValue={(i) => {
+            onChangeValue={(i: TSelectItems) => {
               setTest2(i);
             }}
             behavoir="dropdown"
@@ -91,7 +91,7 @@ export default function Home() {
             boxStyles={{ className: "bg-danger" }}
             items={test2lista}
             value={test2}
-            onChangeValue={(i) => {
+            onChangeValue={(i: TSelectItems) => {
               setTest2(i);
             }}
             behavoir="adapt"
@@ -104,7 +104,7 @@ export default function Home() {
             boxStyles={{ className: "bg-danger" }}
             items={test2lista}
             value={test2}
-            onChangeValue={(i) => {
+            onChangeValue={(i: TSelectItems) => {
               setTest2(i);
             }}
             behavoir="adapt"
@@ -116,7 +116,7 @@ export default function Home() {
             boxStyles={{ className: "bg-danger" }}
             items={test2lista}
             value={test2}
-            onChangeValue={(i) => {
+            onChangeValue={(i: TSelectItems) => {
               setTest2(i);
             }}
             behavoir="adapt"
@@ -138,7 +138,7 @@ export default function Home() {
         hideButton
         items={[1,2,3,4,5,2,3,4,5,2,3,4,5,2,3,4,5,2,3,4,5]}
         value={test}
-        onChangeValue={(i) => {
+        onChangeValue={(i: TSelectItems) => {
           setTest(i);
         }}
       />

@@ -35,15 +35,24 @@
   align-items: flex-end;
   padding: 16px;
   padding-top: 0;
-  border-radius: 16px 0 0 16px;
   background-color: var(--color-bgSecondary);
   //
   position: fixed;
+  transition: transform 200ms ease;
+}
+.navbarCompactedContent.right {
   top: 0;
   right: 0;
   transform: translateX(100%);
-  transition: transform 200ms ease;
+  border-radius: 16px 0 0 16px;
 }
+.navbarCompactedContent.left {
+  top: 0;
+  left: 0;
+  transform: translateX(-100%);
+  border-radius: 0 16px 16px 0;
+}
+
 .navbarCompactedContent.open {
   transform: translateX(0);
 }

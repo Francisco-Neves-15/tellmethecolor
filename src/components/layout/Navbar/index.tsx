@@ -1,19 +1,18 @@
 "use client";
-import { usePathname } from "next/navigation";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 
 // Icons
 import { LuMenu, LuX, LuSun, LuMoon, LuMonitorSmartphone } from "react-icons/lu";
 
 // Styles
-import fStyles from "./style.module.scss"
+import fStyles from "./style.module.scss";
 
 // Components
-import View from "@/components/ui/own/View"
-import Text from "@/components/ui/own/Text"
-import Button from "@/components/ui/own/Button"
+import View from "@/components/ui/own/View";
+import Text from "@/components/ui/own/Text";
+import Button from "@/components/ui/own/Button";
+import Select, { selectValueIsPrimitive, TSelectItems } from "@/components/ui/own/Select";
 
-// Hooks
 // Hooks
 import { useI18n } from "@/hooks/useI18n";
 import { useMedia } from "@/hooks/useMedia";
@@ -21,27 +20,28 @@ import { useTheme } from "@/hooks/useTheme";
 
 // Configs
 import { LayoutTypeOptions } from "@/configs/media.metadata";
+import { ThemeModeOptions } from "@/configs/theme-mode.metadata";
 
 
 
-type INavbarDir = "horizontal" | "vertical";
+type INavbarOrigin = "right" | "left";
 
 interface INavbar {
   style?: CSSProperties;
   className?: string;
-  direction?: INavbarDir | null;
+  origin?: INavbarOrigin | null;
 }
 
 export const Navbar = ({
   style,
   className,
-  direction = null,
+  origin = "right",
 }: INavbar) => {
 
   // const pathname = usePathname();
   const tDataSettings = useI18n("data-settings");
 
-  const { mediaLayoutType, mediaScreenType } = useMedia();
+  const { mediaLayoutType } = useMedia();
   const { resolvedThemeMode, themeMode, setThemeMode } = useTheme();
 
   const [currentLayout, setCurrentLayout] = useState<LayoutTypeOptions | null>(null)
@@ -55,7 +55,7 @@ export const Navbar = ({
 
   // Layout
   const isCompact = currentLayout === "compact";
-  const resolvedListDirectionClassName = direction ? direction : isCompact ? fStyles.navbarListCol : fStyles.navbarListRow;
+  const resolvedListDirectionClassName = isCompact ? fStyles.navbarListCol : fStyles.navbarListRow;
 
   // Toggle
   const openNavbar = () => {
@@ -95,10 +95,69 @@ export const Navbar = ({
   }, [mediaLayoutType]);
 
   // Handle's
-  const handleChangeTheme = () => {
-    if (resolvedThemeMode === "light") setThemeMode("dark");
-    else setThemeMode("light");
+  const handleChangeTheme = (i: TSelectItems) => {
+    if (!selectValueIsPrimitive(i)) {
+      setThemeMode(i.value as ThemeModeOptions);
+    }
   }
+
+  // ===== Config's =====
+  const themeModeOptions: TSelectItems[] = [
+    { 
+      id: "system",
+      value: "system",
+      labelBox: 
+        <View className="flex flex-row gap-2 flex-center">
+          <LuMonitorSmartphone size={32}/>
+          <Text size="button">
+            {tDataSettings[`th-mode-opt-system`]} ({tDataSettings[`th-mode-opt-${resolvedThemeMode}`]})
+          </Text>
+        </View>,
+      labelList:
+        <View className="flex flex-row gap-2 flex-center">
+          <LuMonitorSmartphone size={32}/>
+          <Text size="button">
+            {tDataSettings[`th-mode-opt-system`]} ({tDataSettings[`th-mode-opt-${resolvedThemeMode}`]})
+          </Text>
+        </View>,
+    },
+    { 
+      id: "light",
+      value: "light",
+      labelBox: 
+        <View className="flex flex-row gap-2 flex-center">
+          <LuSun size={32}/>
+          <Text size="button">
+            {tDataSettings[`th-mode-opt-light`]}
+          </Text>
+        </View>,
+      labelList:
+        <View className="flex flex-row gap-2 flex-center">
+          <LuSun size={32}/>
+          <Text size="button">
+            {tDataSettings[`th-mode-opt-light`]}
+          </Text>
+        </View>,
+    },
+    { 
+      id: "dark",
+      value: "dark",
+      labelBox: 
+        <View className="flex flex-row gap-2 flex-center">
+          <LuMoon size={32}/>
+          <Text size="button">
+            {tDataSettings[`th-mode-opt-dark`]}
+          </Text>
+        </View>,
+      labelList:
+        <View className="flex flex-row gap-2 flex-center">
+          <LuMoon size={32}/>
+          <Text size="button">
+            {tDataSettings[`th-mode-opt-dark`]}
+          </Text>
+        </View>,
+    },
+  ]
 
   // Render's
 
@@ -110,18 +169,12 @@ export const Navbar = ({
           {isCompact && (
             <Text size="h3">{tDataSettings["th-mode-title"]}</Text>
           )}
-          <Button
-            icon={!isCompact}
-            variant={!isCompact ? "ghost" : "outline"}
-            onClick={handleChangeTheme}
-          >
-            {isCompact && (
-              <Text size="button">
-                {`${tDataSettings[`th-mode-opt-${resolvedThemeMode}`]}`}
-              </Text>
-            )}
-            {resolvedThemeMode === "light" ? <LuSun size={32} /> : <LuMoon size={32} />}
-          </Button>
+          <Select
+            boxVariant={!isCompact ? "ghost" : "outline"}
+            items={themeModeOptions}
+            value={themeMode}
+            onChangeValue={(i) => handleChangeTheme(i)}
+          />
         </View>
       </div>
     )
@@ -152,7 +205,11 @@ export const Navbar = ({
               className={`${fStyles.navbarOverlay} ${navbarExpanded ? fStyles.open : ""}`} 
             />
             <View
-              className={`${fStyles.navbarCompactedContent} ${navbarExpanded ? fStyles.open : ""}`}
+              className={`
+                ${fStyles.navbarCompactedContent} 
+                ${origin === "right" ? fStyles.right : fStyles.left} 
+                ${navbarExpanded ? fStyles.open : ""}
+              `}
             >
               <View className={`${fStyles.navbarHeader}`}>
                 <Button

@@ -39,7 +39,7 @@ import { calculateDropdown } from "./select.dropdown.calcs";
 
 interface IListSelect {
   value: unknown;
-  labelBox?: string;
+  labelBox?: string | React.ReactNode;
   labelList?: string | React.ReactNode;
   id: string;
 }
@@ -115,7 +115,7 @@ export function selectValueIsPrimitive(item: TSelectItems): item is string | num
   return typeof item === "string" || typeof item === "number";
 }
 
-export const Select = forwardRef<ISelectRef, ISelect>(({
+const Select = forwardRef<ISelectRef, ISelect>(({
   items = [],
   value,
   onChangeValue,
@@ -336,15 +336,17 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   }, [state.open, isDropdown, isModal]);
 
   // Current Showing
-  const currentDisplayText = useMemo(() => {
+  const currentDisplaying = useMemo(() => {
     if (!value) return resolvedPlaceholder;
-    let final: unknown;
+    let final: React.ReactNode;
     if (selectValueIsPrimitive(value)) {
-      final = value;
+      final = <Text size="body">{String(value)}</Text>;
+    } else if (typeof value.labelBox === "string") {
+      final = <Text size="body">{value.labelBox}</Text>;
     } else {
-      final = value.labelBox ?? value.labelList ?? value.value ?? value.id;
-    };
-    return String(final);
+      final = value.labelBox;
+    }
+    return final;
   }, [value]);
 
   // Filtred Items
@@ -395,11 +397,11 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
             onClick={toggle}
             disabled={disabled}
           >
-            <Text size="button">
-              {fixTexts?.boxPrefix && fixTexts?.boxPrefix}
-              {currentDisplayText}
-              {fixTexts?.boxSuffix && fixTexts?.boxSuffix}
-            </Text>
+            <View className="flex flex-row gap-4">
+              <Text size="button">{fixTexts?.boxPrefix && fixTexts?.boxPrefix}</Text>
+              {currentDisplaying}
+              <Text size="button">{fixTexts?.boxSuffix && fixTexts?.boxSuffix}</Text>
+            </View>
             <View
               className={`transform transition-transform ${!state.open ? "rotate-0" : "-rotate-180"}`} 
             >
@@ -539,3 +541,4 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
 });
 
 Select.displayName = "Select";
+export default Select;
