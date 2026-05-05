@@ -31,7 +31,7 @@ export default function Home() {
   }, [test])
 
   const test2lista: TSelectItems[] = [
-    { id: "0", value: "myVal0", labelList: <><LuHouse/><Text size="body">list0</Text></>, labelBox: "box0" },
+    { id: "0", value: "myVal0", labelList: <><LuHouse/><Text size="body">list0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasa</Text></>, labelBox: "box0" },
     { id: "1", value: "myVal1", labelList: <Text size="body">list1</Text>, labelBox: "box1" },
     { id: "2", value: "myVal2", labelList: <Text size="body">list2</Text>, labelBox: "box2" },
     { id: "3", value: "myVal3", labelList: <Text size="body">list3</Text>, labelBox: "box3" },
@@ -60,6 +60,18 @@ export default function Home() {
   return (
     <Container padding header={false}>
 
+      <input type="range" name="" id="" />
+
+      <br />
+
+      <select name="" id="">
+        <option value="a">aaaaaaaa</option>
+        <option value="a">aaaaaaaa</option>
+        <option value="a">aaaaaaaa</option>
+        <option value="a">aaaaaaaa</option>
+        <option value="a">aaaaaaaa</option>
+      </select>
+
       <View className="w-full h-full bg-warning/20 flex flex-center" style={{ position: "relative" }}>
 
         <View style={{ position: "absolute", top: 0, left: 0 }}>
@@ -83,6 +95,7 @@ export default function Home() {
               setTest2(i);
             }}
             behavoir="adapt"
+            disabled
           />
         </View>
 

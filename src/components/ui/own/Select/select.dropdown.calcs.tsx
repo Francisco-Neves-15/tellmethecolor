@@ -45,39 +45,51 @@ function resolveDropdownPosition({
   return `${vertical}-${horizontal}` as TResolvedPosition;
 }
 
-function getDropdownStyle(
-  rect: DOMRect,
-  position: TResolvedPosition
-): CSSProperties {
-
+function getDropdownStyle(position: TResolvedPosition): CSSProperties {
   const offset = 4;
+
+  const base: CSSProperties = {
+    position: "absolute",
+    transform: "none",
+  };
 
   switch (position) {
     case "bottom-left":
       return {
-        top: rect.bottom + offset,
-        left: rect.right,
-        transform: "translateX(-100%)",
+        ...base,
+        top: "100%",
+        left: "auto",
+        right: 0,
+        marginTop: offset,
       };
 
     case "bottom-right":
       return {
-        top: rect.bottom + offset,
-        left: rect.left,
+        ...base,
+        top: "100%",
+        left: 0,
+        right: "auto",
+        marginTop: offset,
       };
 
     case "top-left":
       return {
-        top: rect.top - offset,
-        left: rect.right,
-        transform: "translateX(-100%) translateY(-100%)",
+        ...base,
+        bottom: "100%",
+        top: "auto",
+        left: "auto",
+        right: 0,
+        marginBottom: offset,
       };
 
     case "top-right":
       return {
-        top: rect.top - offset,
-        left: rect.left,
-        transform: "translateX(0%) translateY(-100%)",
+        ...base,
+        bottom: "100%",
+        top: "auto",
+        left: 0,
+        right: "auto",
+        marginBottom: offset,
       };
   }
 }
@@ -93,12 +105,11 @@ export const calculateDropdown = ({
 }) => {
   if (!openButtonRef) return;
 
-  const rect = openButtonRef.current?.getBoundingClientRect();
-  if (!rect) return;
+  if (!openButtonRef.current) return;
 
   const resolved = resolveDropdownPosition({ openButtonRef, preferred: dropdownPosition });
 
-  const style = getDropdownStyle(rect, resolved);
+  const style = getDropdownStyle(resolved);
 
   setDropdownMeta({
     position: resolved,

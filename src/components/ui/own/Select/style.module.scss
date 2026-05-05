@@ -23,6 +23,14 @@
   gap: 4px;
 }
 
+.dropdownAnchor {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 100%;
+}
+
 // Modal
 .modalContent {
   z-index: 1002;
@@ -64,7 +72,6 @@
   justify-content: flex-start;
   align-items: center;
   padding: 16px;
-  @include mix.screen_large { gap: 8px; }
 }
 
 .modalContentListItem {
@@ -73,8 +80,13 @@
   width: 100%;
   height: auto;
   padding: 16px 8px;
-  border-radius: 8px;
-  transition: opacity 250ms ease-in-out, background-color 250ms ease-in-out;
+  transition: opacity 250ms ease-in-out;
+  // Adding "..." in overflow's texts
+  & p, span, h1, h2, h3, h4, h5, h6 {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   &:active {
     opacity: 0.5;
   }
@@ -102,11 +114,13 @@
   border-radius: 8px;
   min-width: 240px;
   width: auto;
-  max-width: 360px;
+  @include mix.screen_small { max-width: 320px; };
+  @include mix.screen_medium { max-width: 512px; };
+  @include mix.screen_large { max-width: 512px; };
+  height: auto;
+  max-height: 360px;
   opacity: 0;
   transition: opacity 250ms ease;
-  padding-top: 8px;
-  padding-bottom: 8px;
 }
 .dropdownContent.open {
   opacity: 1;
@@ -115,7 +129,6 @@
 .dropdownContentList {
   width: 100%;
   height: 100%;
-  max-height: 360px;
   overflow-x: hidden;
   overflow-y: auto;
   display: flex;
@@ -123,7 +136,7 @@
   justify-content: flex-start;
   align-items: center;
   padding: 8px;
-  gap: 4px;
+  // gap: 4px;
 }
 
 .dropdownContentListItem {
@@ -131,11 +144,16 @@
   justify-content: flex-start;
   width: 100%;
   height: auto;
-  @include mix.screen_small { padding: 8px 8px; }
-  @include mix.screen_medium { padding: 8px 8px; }
-  @include mix.screen_large { padding: 4px 8px; }
-  border-radius: 4px;
-  transition: opacity 250ms ease-in-out, background-color 250ms ease-in-out;
+  @include mix.screen_small { padding: 12px 8px; }
+  @include mix.screen_medium { padding: 12px 8px; }
+  @include mix.screen_large { padding: 8px 8px; }
+  transition: opacity 250ms ease-in-out;
+  // Adding "..." in overflow's texts
+  & p, span, h1, h2, h3, h4, h5, h6 {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   &:active {
     opacity: 0.5;
   }

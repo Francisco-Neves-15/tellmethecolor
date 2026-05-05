@@ -28,7 +28,6 @@ import { useI18n } from "@/hooks/useI18n";
 import { useMedia } from "@/hooks/useMedia";
 
 // Utils
-import { throttle } from "@/utils/geral";
 import { extractTextFromNode, normalizeSearchText } from "@/utils/strings";
 
 // Dropdown
@@ -81,6 +80,7 @@ interface ISelect {
   defaultValueIdOrIndex?: string | number | null;
   placeholder?: string;
   hideButton?: boolean;
+  disabled?: boolean;
   behavoir?: TSelectBehavoir;
   dropdownPosition?: TDropdownPosition;
   // Fixs Values (Suffix's and Prefix's)
@@ -123,6 +123,8 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   defaultValueIdOrIndex = null,
   placeholder,
   behavoir = "adapt",
+  hideButton = false,
+  disabled = false,
   dropdownPosition = "adapt",
   fixTexts,
   // Styles
@@ -130,7 +132,6 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   boxStyles,
   modalStyles,
   dropdownStyles,
-  hideButton = false,
 }, ref) => {
 
   // const pathname = usePathname();
@@ -192,6 +193,7 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   // Toggle
 
   const open = (options?: TShowOptions) => {
+    if (disabled) return;
 
     if (options?.behavior === "dropdown" && hideButton) {
       console.error(
@@ -215,6 +217,8 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   };
 
   const close = () => {
+    if (disabled) return;
+
     setState(prev => ({
       ...prev,
       mounted: false
@@ -228,6 +232,7 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   };
 
   const toggle = (options?: TShowOptions) => {
+    if (disabled) return;
     if (state.open) close();
     else open(options);
   };
@@ -241,14 +246,9 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
     };
   }, [state.open]);
 
-  // Autoclose
-  // useEffect(() => {
-  //   if (isSmall) close();
-  //   if (!isSmall) close();
-  // }, [mediaScreenType]);
-
   // Auto Select if "defaultValue"
   useEffect(() => {
+    if (disabled) return;
     if (defaultValueIdOrIndex === null || defaultValueIdOrIndex === undefined) return;
     if (!items.length) return;
 
@@ -275,6 +275,11 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
 
   }, [defaultValueIdOrIndex, items]);
 
+  // Autoclose on change media
+  useEffect(() => {
+    close();
+  }, [mediaScreenType]);
+
   // Auto Calc for the Dropdown
   useEffect(() => {
     if (!state.open || isModal || !isDropdown) return;
@@ -284,18 +289,22 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
       return;
     }
 
-    const handler = throttle(() => {
-      calculateDropdown({ openButtonRef, dropdownPosition, setDropdownMeta });
-    }, 100);
+    calculateDropdown({ openButtonRef, dropdownPosition, setDropdownMeta });
 
-    handler();
+    const handleScroll = (event: Event) => {
+      const target = event.target;
 
-    window.addEventListener("resize", handler);
-    window.addEventListener("scroll", handler, true);
+      if (dropdownRef.current?.contains(target as Node)) return;
+
+      close();
+    };
+
+    window.addEventListener("resize", close);
+    window.addEventListener("scroll", handleScroll, true);
 
     return () => {
-      window.removeEventListener("resize", handler);
-      window.removeEventListener("scroll", handler, true);
+      window.removeEventListener("resize", close);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [state.open]);
 
@@ -360,8 +369,9 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
     });
   }, [items, searchQuery]);
 
-  // On Select Hidden
+  // On Select Value
   const onSelectValue = (value: TSelectItems) => {
+    if (disabled) return;
     onChangeValue(value);
     close();
     // DEBUG
@@ -376,93 +386,27 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
     <>
 
       {!hideButton && (
-        <Button
-          ref={openButtonRef}
-          variant={boxVariant}
-          className={`${fStyles.boxContainer} ${boxStyles?.className}`} 
-          style={{ ...boxStyles?.style }}
-          onClick={toggle}
-        >
-          <Text size="button">
-            {fixTexts?.boxPrefix && fixTexts?.boxPrefix}
-            {currentDisplayText}
-            {fixTexts?.boxSuffix && fixTexts?.boxSuffix}
-          </Text>
-          <View
-            className={`transform transition-transform ${!state.open ? "rotate-0" : "-rotate-180"}`} 
+        <div className={fStyles.dropdownAnchor}>
+          <Button
+            ref={openButtonRef}
+            variant={boxVariant}
+            className={`${fStyles.boxContainer} ${boxStyles?.className}`} 
+            style={{ ...boxStyles?.style }}
+            onClick={toggle}
+            disabled={disabled}
           >
-            <LuChevronDown size={24} color={gColors.text} />
-          </View>
-        </Button>
-      )}
-
-      {!state.open ? null : (
-        <>
-          {isModal && (
-            <>
-              {/* Modal Overlay */}
-              <div onClick={close} className={`${fStyles.modalOverlay} ${state.open ? fStyles.open : ""}`}/>
-              {/* Modal */}
-              <View
-                className={`${fStyles.modalContent} ${modalStyles?.className} ${state.open ? fStyles.open : ""}`} 
-                style={{ ...modalStyles?.style }}
-              >
-                <Button
-                  ref={closeButtonRef}
-                  icon
-                  proportion="square"
-                  variant={"main"}
-                  color="danger"
-                  onClick={close}
-                  className={`${fStyles.modalCloseButton}`}
-                >
-                  <LuX size={24} color={gColors.light} />
-                </Button>
-                <View className={`${fStyles.modalContentList}`}>
-                  {search && (
-                    <View className="w-full" style={{ marginBottom: 4 }}>
-                      <Input
-                        variant="search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder={tCommon["common-search"]}
-                        clearFunction={() => setSearchQuery("")}
-                        variantsConfigs={{
-                          showSearchButton: false,
-                        }}
-                        containerClassName="w-full"
-                      />
-                    </View>
-                  )}
-                  {filteredItems.map((value, index, array) => (
-                    <React.Fragment key={`${index}-modal-list-item`}>
-                      <button
-                        className={`${fStyles.modalContentListItem} ${modalStyles?.listItemClassName}`}
-                        style={{ ...modalStyles?.listItemStyle }}
-                        onClick={() => onSelectValue(value)}
-                      >
-                        {selectValueIsPrimitive(value) ? (
-                          <Text size="body">{String(value)}</Text>
-                        ) : typeof value.labelList === "string" ? (
-                          <Text size="body">{value.labelList}</Text>
-                        ) : (
-                          value.labelList
-                        )}
-                      </button>
-                      <DivisorLine show={(index + 1) !== array.length} />
-                      {array.length === 0 && (
-                        <Text size="body">{tCommon["common-search-empty"]}</Text>
-                      )}
-                    </React.Fragment>
-                  ))}
-                  {filteredItems.length === 0 && (
-                    <Text size="body" style={{ marginTop: 8 }} >{tCommon["common-search-empty"]}</Text>
-                  )}
-                </View>
-              </View>
-            </>
-          )}
-          {isDropdown && dropdownMeta && (
+            <Text size="button">
+              {fixTexts?.boxPrefix && fixTexts?.boxPrefix}
+              {currentDisplayText}
+              {fixTexts?.boxSuffix && fixTexts?.boxSuffix}
+            </Text>
+            <View
+              className={`transform transition-transform ${!state.open ? "rotate-0" : "-rotate-180"}`} 
+            >
+              <LuChevronDown size={24} color={gColors.text} />
+            </View>
+          </Button>
+          {state.open && isDropdown && dropdownMeta && (
             <View
               ref={dropdownRef}
               className={`
@@ -472,7 +416,6 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
                 ${state.open ? fStyles.open : ""}
               `} 
               style={{
-                position: "fixed",
                 ...dropdownMeta.style,
                 ...dropdownStyles?.style
               }}
@@ -518,6 +461,75 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
                 )}
               </View>
             </View>
+          )}
+        </div>
+      )}
+
+      {!state.open ? null : (
+        <>
+          {isModal && (
+            <>
+              {/* Modal Overlay */}
+              <div onClick={close} className={`${fStyles.modalOverlay} ${state.open ? fStyles.open : ""}`}/>
+              {/* Modal */}
+              <View
+                className={`${fStyles.modalContent} ${modalStyles?.className} ${state.open ? fStyles.open : ""}`} 
+                style={{ ...modalStyles?.style }}
+              >
+                <Button
+                  ref={closeButtonRef}
+                  icon
+                  proportion="square"
+                  variant={"main"}
+                  color="danger"
+                  onClick={close}
+                  className={`${fStyles.modalCloseButton}`}
+                >
+                  <LuX size={24} color={gColors.light} />
+                </Button>
+                <View className={`${fStyles.modalContentList}`}>
+                  {search && (
+                    <View className="w-full" style={{ marginBottom: 8 }}>
+                      <Input
+                        variant="search"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder={tCommon["common-search"]}
+                        clearFunction={() => setSearchQuery("")}
+                        variantsConfigs={{
+                          showSearchButton: false,
+                        }}
+                        containerClassName="w-full"
+                      />
+                    </View>
+                  )}
+                  {filteredItems.map((value, index, array) => (
+                    <React.Fragment key={`${index}-modal-list-item`}>
+                      <button
+                        className={`${fStyles.modalContentListItem} ${modalStyles?.listItemClassName}`}
+                        style={{ ...modalStyles?.listItemStyle }}
+                        onClick={() => onSelectValue(value)}
+                      >
+                        {selectValueIsPrimitive(value) ? (
+                          <Text size="body">{String(value)}</Text>
+                        ) : typeof value.labelList === "string" ? (
+                          <Text size="body">{value.labelList}</Text>
+                        ) : (
+                          value.labelList
+                        )}
+                      </button>
+                      <DivisorLine show={(index + 1) !== array.length} />
+                      {array.length === 0 && (
+                        <Text size="body">{tCommon["common-search-empty"]}</Text>
+                      )}
+                    </React.Fragment>
+                  ))}
+                  {filteredItems.length === 0 && (
+                    <Text size="body" style={{ marginTop: 8 }} >{tCommon["common-search-empty"]}</Text>
+                  )}
+                </View>
+              </View>
+            </>
           )}
         </>
       )}
