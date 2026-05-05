@@ -85,3 +85,24 @@
   align-items: center;
   gap: 4px;
 }
+
+// Options
+.configOptionRow {
+  @include mix.flex_center;
+  @include mix.width_full;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.configOptionItemBox {
+  @include mix.flex_center;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.configOptionItemList {
+  @include mix.flex_center;
+  flex-direction: row;
+  gap: 8px;
+}

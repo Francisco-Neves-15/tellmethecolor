@@ -42,7 +42,7 @@ export const Navbar = ({
   const tDataSettings = useI18n("data-settings");
 
   const { mediaLayoutType } = useMedia();
-  const { resolvedThemeMode, themeMode, setThemeMode } = useTheme();
+  const { resolvedThemeMode, themeMode, systemThemeMode, setThemeMode } = useTheme();
 
   const [currentLayout, setCurrentLayout] = useState<LayoutTypeOptions | null>(null)
 
@@ -107,17 +107,19 @@ export const Navbar = ({
       id: "system",
       value: "system",
       labelBox: 
-        <View className="flex flex-row gap-2 flex-center">
+        <View className={fStyles.configOptionItemBox}>
           <LuMonitorSmartphone size={32}/>
-          <Text size="button">
-            {tDataSettings[`th-mode-opt-system`]} ({tDataSettings[`th-mode-opt-${resolvedThemeMode}`]})
-          </Text>
+          {isCompact && (
+            <Text size="button">
+              {tDataSettings[`th-mode-opt-system`]} ({tDataSettings[`th-mode-opt-${systemThemeMode}`]})
+            </Text>
+          )}
         </View>,
       labelList:
-        <View className="flex flex-row gap-2 flex-center">
+        <View className={fStyles.configOptionItemList}>
           <LuMonitorSmartphone size={32}/>
           <Text size="button">
-            {tDataSettings[`th-mode-opt-system`]} ({tDataSettings[`th-mode-opt-${resolvedThemeMode}`]})
+            {tDataSettings[`th-mode-opt-system`]} ({tDataSettings[`th-mode-opt-${systemThemeMode}`]})
           </Text>
         </View>,
     },
@@ -125,14 +127,16 @@ export const Navbar = ({
       id: "light",
       value: "light",
       labelBox: 
-        <View className="flex flex-row gap-2 flex-center">
+        <View className={fStyles.configOptionItemBox}>
           <LuSun size={32}/>
-          <Text size="button">
-            {tDataSettings[`th-mode-opt-light`]}
-          </Text>
+          {isCompact && (
+            <Text size="button">
+              {tDataSettings[`th-mode-opt-light`]}
+            </Text>
+          )}
         </View>,
       labelList:
-        <View className="flex flex-row gap-2 flex-center">
+        <View className={fStyles.configOptionItemList}>
           <LuSun size={32}/>
           <Text size="button">
             {tDataSettings[`th-mode-opt-light`]}
@@ -143,20 +147,22 @@ export const Navbar = ({
       id: "dark",
       value: "dark",
       labelBox: 
-        <View className="flex flex-row gap-2 flex-center">
+        <View className={fStyles.configOptionItemBox}>
           <LuMoon size={32}/>
-          <Text size="button">
-            {tDataSettings[`th-mode-opt-dark`]}
-          </Text>
+          {isCompact && (
+            <Text size="button">
+              {tDataSettings[`th-mode-opt-dark`]}
+            </Text>
+          )}
         </View>,
       labelList:
-        <View className="flex flex-row gap-2 flex-center">
+        <View className={fStyles.configOptionItemList}>
           <LuMoon size={32}/>
           <Text size="button">
             {tDataSettings[`th-mode-opt-dark`]}
           </Text>
         </View>,
-    },
+    }
   ]
 
   // Render's
@@ -165,12 +171,19 @@ export const Navbar = ({
   const NavBarList = () => {
     return (
       <div className={`${resolvedListDirectionClassName}`}>
-        <View className="w-full flex flex-row justify-between items-center">
+        <View className={fStyles.configOptionRow}>
           {isCompact && (
             <Text size="h3">{tDataSettings["th-mode-title"]}</Text>
           )}
           <Select
-            boxVariant={!isCompact ? "ghost" : "outline"}
+            boxStyles={{
+              boxVariant: !isCompact ? "ghost" : "outline",
+              boxProportion: !isCompact ? "square" : "normal",
+              boxSize: !isCompact ? "small" : "normal",
+              icon: !isCompact,
+              // style: !isCompact ? { padding: 8 } : {}
+            }}
+            hideChevron={!isCompact}
             items={themeModeOptions}
             value={themeMode}
             onChangeValue={(i) => handleChangeTheme(i)}

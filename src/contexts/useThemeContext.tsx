@@ -14,7 +14,7 @@ import {
   readStoredThemeMode,
 } from "@/utils/read-theme-prefs";
 
-import { getResolvedThemeMode } from "@/utils/theme";
+import { getResolvedThemeMode, getSystemThemeMode } from "@/utils/theme";
 
 // context
 export const ThemeContext = createContext({} as ThemeContextType);
@@ -26,6 +26,7 @@ const FALLBACK_MODE: ThemeModeOptions = "system";
 
 type ThemeContextType = {
   themeMode: ThemeModeOptions;
+  systemThemeMode: "light" | "dark";
   resolvedThemeMode: ThemeModeResolved;
   setThemeMode: (t: ThemeModeOptions) => void;
 
@@ -133,6 +134,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     <ThemeContext.Provider
       value={{
         themeMode,
+        systemThemeMode: getSystemThemeMode(),
         resolvedThemeMode: getResolvedThemeMode(themeMode),
         setThemeMode,
 

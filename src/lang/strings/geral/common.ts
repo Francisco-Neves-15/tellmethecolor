@@ -1,5 +1,6 @@
 export const common_str = {
   "pt-BR": {
+    "common-list-empty": "Lista vazia.",
     "common-search": "Pesquise aqui...",
     "common-search-empty": "Nenhum resultado encontrado.",
     "common-select": "Selecione",
@@ -7,6 +8,7 @@ export const common_str = {
     "common-cancel": "Cancelar",
   },
   "en-US": {
+    "common-list-empty": "Empty list.",
     "common-search": "Search here...",
     "common-search-empty": "No results found.",
     "common-select": "Select",

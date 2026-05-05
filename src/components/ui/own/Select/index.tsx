@@ -8,6 +8,7 @@ import React, {
   CSSProperties,
   useMemo
 } from "react";
+import { createPortal } from "react-dom";
 
 // Icons
 import { LuX, LuChevronDown } from "react-icons/lu";
@@ -19,7 +20,7 @@ import fStyles from "./style.module.scss"
 // Components
 import View from "@/components/ui/own/View"
 import Text from "@/components/ui/own/Text"
-import Button, { TButtonVariants } from "@/components/ui/own/Button"
+import Button, { TButtonColors, TButtonProportion, TButtonSize, TButtonVariants } from "@/components/ui/own/Button"
 import Input from "@/components/ui/own/Input"
 import DivisorLine from "@/components/ui/own/DivisorLine"
 
@@ -46,6 +47,9 @@ interface IListSelect {
 
 export type TSelectItems = IListSelect | number | string;
 type TSelectVariant = TButtonVariants;
+type TSelectColors = TButtonColors;
+type TSelectSize = TButtonSize;
+type TSelectProportion = TButtonProportion;
 
 type TResolvedBehavoir = "dropdown" | "modal";
 type TSelectBehavoir = "adapt" | TResolvedBehavoir;
@@ -80,6 +84,7 @@ interface ISelect {
   defaultValueIdOrIndex?: string | number | null;
   placeholder?: string;
   hideButton?: boolean;
+  hideChevron?: boolean;
   disabled?: boolean;
   behavoir?: TSelectBehavoir;
   dropdownPosition?: TDropdownPosition;
@@ -91,8 +96,12 @@ interface ISelect {
     listPrefix?: string | null;
   };
   // Styles
-  boxVariant?: TSelectVariant;
   boxStyles?: {
+    boxVariant?: TSelectVariant;
+    boxColor?: TSelectColors;
+    boxSize?: TSelectSize;
+    boxProportion?: TSelectProportion;
+    icon?: boolean;
     style?: CSSProperties;
     className?: string;
   };
@@ -124,12 +133,18 @@ const Select = forwardRef<ISelectRef, ISelect>(({
   placeholder,
   behavoir = "adapt",
   hideButton = false,
+  hideChevron = false,
   disabled = false,
   dropdownPosition = "adapt",
   fixTexts,
   // Styles
-  boxVariant = "sub",
-  boxStyles,
+  boxStyles = {
+    boxVariant: "sub",
+    boxColor: "theme",
+    boxSize: "normal",
+    boxProportion: "normal",
+    icon: true
+  },
   modalStyles,
   dropdownStyles,
 }, ref) => {
@@ -336,18 +351,36 @@ const Select = forwardRef<ISelectRef, ISelect>(({
   }, [state.open, isDropdown, isModal]);
 
   // Current Showing
-  const currentDisplaying = useMemo(() => {
-    if (!value) return resolvedPlaceholder;
-    let final: React.ReactNode;
+  const currentDisplaying = useMemo<React.ReactNode>(() => {
+    if (!value) return <Text size="body">{resolvedPlaceholder}</Text>;
+
     if (selectValueIsPrimitive(value)) {
-      final = <Text size="body">{String(value)}</Text>;
-    } else if (typeof value.labelBox === "string") {
-      final = <Text size="body">{value.labelBox}</Text>;
-    } else {
-      final = value.labelBox;
+      const first = items[0];
+      const itemsAreObjects = first !== undefined && !selectValueIsPrimitive(first);
+
+      if (itemsAreObjects) {
+        const found = (items as IListSelect[]).find((it) => it.value === value || it.id === String(value));
+        if (found) {
+          if (typeof found.labelBox === "string") return <Text size="body">{found.labelBox}</Text>;
+          if (found.labelBox) return found.labelBox;
+          if (typeof found.labelList === "string") return <Text size="body">{found.labelList}</Text>;
+          if (found.labelList) return found.labelList;
+          return <Text size="body">{String(found.value ?? found.id)}</Text>;
+        }
+      }
+
+      return <Text size="body">{String(value)}</Text>;
     }
-    return final;
-  }, [value]);
+
+    if (typeof value.labelBox === "string") return <Text size="body">{value.labelBox}</Text>;
+    if (value.labelBox) return value.labelBox;
+
+    // default fallback's
+    if (typeof value.labelList === "string") return <Text size="body">{value.labelList}</Text>;
+    if (value.labelList) return value.labelList;
+    return <Text size="body">{String(value.value ?? value.id)}</Text>;
+
+  }, [value, items, resolvedPlaceholder]);
 
   // Filtred Items
   const filteredItems = useMemo(() => {
@@ -391,22 +424,32 @@ const Select = forwardRef<ISelectRef, ISelect>(({
         <div className={fStyles.dropdownAnchor}>
           <Button
             ref={openButtonRef}
-            variant={boxVariant}
+            variant={boxStyles.boxVariant}
+            color={boxStyles.boxColor}
+            size={boxStyles.boxSize}
+            proportion={boxStyles.boxProportion}
+            icon={boxStyles.icon}
             className={`${fStyles.boxContainer} ${boxStyles?.className}`} 
             style={{ ...boxStyles?.style }}
             onClick={toggle}
             disabled={disabled}
           >
             <View className="flex flex-row gap-4">
-              <Text size="button">{fixTexts?.boxPrefix && fixTexts?.boxPrefix}</Text>
+              {fixTexts?.boxPrefix && (
+                <Text size="button">{fixTexts?.boxPrefix}</Text>
+              )}
               {currentDisplaying}
-              <Text size="button">{fixTexts?.boxSuffix && fixTexts?.boxSuffix}</Text>
+              {fixTexts?.boxSuffix && (
+                <Text size="button">{fixTexts?.boxSuffix}</Text>
+              )}
             </View>
-            <View
-              className={`transform transition-transform ${!state.open ? "rotate-0" : "-rotate-180"}`} 
-            >
-              <LuChevronDown size={24} color={gColors.text} />
-            </View>
+            {!hideChevron && (
+              <View
+                className={`transform transition-transform ${!state.open ? "rotate-0" : "-rotate-180"}`} 
+              >
+                <LuChevronDown size={24} color={gColors.text} />
+              </View>
+            )}
           </Button>
           {state.open && isDropdown && dropdownMeta && (
             <View
@@ -458,8 +501,11 @@ const Select = forwardRef<ISelectRef, ISelect>(({
                     <DivisorLine show={(index + 1) !== array.length} />
                   </React.Fragment>
                 ))}
-                {filteredItems.length === 0 && (
+                {(filteredItems.length === 0 && search) && (
                   <Text size="caption">{tCommon["common-search-empty"]}</Text>
+                )}
+                {items.length === 0 && (
+                  <Text size="caption">{tCommon["common-list-empty"]}</Text>
                 )}
               </View>
             </View>
@@ -469,70 +515,73 @@ const Select = forwardRef<ISelectRef, ISelect>(({
 
       {!state.open ? null : (
         <>
-          {isModal && (
-            <>
-              {/* Modal Overlay */}
-              <div onClick={close} className={`${fStyles.modalOverlay} ${state.open ? fStyles.open : ""}`}/>
-              {/* Modal */}
-              <View
-                className={`${fStyles.modalContent} ${modalStyles?.className} ${state.open ? fStyles.open : ""}`} 
-                style={{ ...modalStyles?.style }}
-              >
-                <Button
-                  ref={closeButtonRef}
-                  icon
-                  proportion="square"
-                  variant={"main"}
-                  color="danger"
-                  onClick={close}
-                  className={`${fStyles.modalCloseButton}`}
+          {isModal &&
+            createPortal(
+              <>
+                {/* Modal Overlay */}
+                <div onClick={close} className={`${fStyles.modalOverlay} ${state.open ? fStyles.open : ""}`}/>
+                {/* Modal */}
+                <View
+                  className={`${fStyles.modalContent} ${modalStyles?.className} ${state.open ? fStyles.open : ""}`} 
+                  style={{ ...modalStyles?.style }}
                 >
-                  <LuX size={24} color={gColors.light} />
-                </Button>
-                <View className={`${fStyles.modalContentList}`}>
-                  {search && (
-                    <View className="w-full" style={{ marginBottom: 8 }}>
-                      <Input
-                        variant="search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder={tCommon["common-search"]}
-                        clearFunction={() => setSearchQuery("")}
-                        variantsConfigs={{
-                          showSearchButton: false,
-                        }}
-                        containerClassName="w-full"
-                      />
-                    </View>
-                  )}
-                  {filteredItems.map((value, index, array) => (
-                    <React.Fragment key={`${index}-modal-list-item`}>
-                      <button
-                        className={`${fStyles.modalContentListItem} ${modalStyles?.listItemClassName}`}
-                        style={{ ...modalStyles?.listItemStyle }}
-                        onClick={() => onSelectValue(value)}
-                      >
-                        {selectValueIsPrimitive(value) ? (
-                          <Text size="body">{String(value)}</Text>
-                        ) : typeof value.labelList === "string" ? (
-                          <Text size="body">{value.labelList}</Text>
-                        ) : (
-                          value.labelList
-                        )}
-                      </button>
-                      <DivisorLine show={(index + 1) !== array.length} />
-                      {array.length === 0 && (
-                        <Text size="body">{tCommon["common-search-empty"]}</Text>
-                      )}
-                    </React.Fragment>
-                  ))}
-                  {filteredItems.length === 0 && (
-                    <Text size="body" style={{ marginTop: 8 }} >{tCommon["common-search-empty"]}</Text>
-                  )}
+                  <Button
+                    ref={closeButtonRef}
+                    icon
+                    proportion="square"
+                    variant={"main"}
+                    color="danger"
+                    onClick={close}
+                    className={`${fStyles.modalCloseButton}`}
+                  >
+                    <LuX size={24} color={gColors.light} />
+                  </Button>
+                  <View className={`${fStyles.modalContentList}`}>
+                    {search && (
+                      <View className="w-full" style={{ marginBottom: 8 }}>
+                        <Input
+                          variant="search"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder={tCommon["common-search"]}
+                          clearFunction={() => setSearchQuery("")}
+                          variantsConfigs={{
+                            showSearchButton: false,
+                          }}
+                          containerClassName="w-full"
+                        />
+                      </View>
+                    )}
+                    {filteredItems.map((value, index, array) => (
+                      <React.Fragment key={`${index}-modal-list-item`}>
+                        <button
+                          className={`${fStyles.modalContentListItem} ${modalStyles?.listItemClassName}`}
+                          style={{ ...modalStyles?.listItemStyle }}
+                          onClick={() => onSelectValue(value)}
+                        >
+                          {selectValueIsPrimitive(value) ? (
+                            <Text size="body">{String(value)}</Text>
+                          ) : typeof value.labelList === "string" ? (
+                            <Text size="body">{value.labelList}</Text>
+                          ) : (
+                            value.labelList
+                          )}
+                        </button>
+                        <DivisorLine show={(index + 1) !== array.length} />
+                      </React.Fragment>
+                    ))}
+                    {(filteredItems.length === 0 && search) && (
+                      <Text size="body">{tCommon["common-search-empty"]}</Text>
+                    )}
+                    {items.length === 0 && (
+                      <Text size="body">{tCommon["common-list-empty"]}</Text>
+                    )}
+                  </View>
                 </View>
-              </View>
-            </>
-          )}
+              </>,
+              document.body
+            )
+          }
         </>
       )}
 
