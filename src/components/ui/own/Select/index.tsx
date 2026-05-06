@@ -139,7 +139,7 @@ const Select = forwardRef<ISelectRef, ISelect>(({
   fixTexts,
   // Styles
   boxStyles = {
-    boxVariant: "sub",
+    boxVariant: "secondary",
     boxColor: "theme",
     boxSize: "normal",
     boxProportion: "normal",

@@ -6,7 +6,7 @@ import useGlobalStyles from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss";
 
 // Types
-export type TButtonVariants = "main" | "sub" | "outline" | "ghost" | "bg-dark" | "bg-light";
+export type TButtonVariants = "main" | "secondary" | "outline" | "ghost" | "bg-dark" | "bg-light";
 export type TButtonColors =
   | "primary"
   | "info"

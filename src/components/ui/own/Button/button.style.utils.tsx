@@ -64,7 +64,7 @@ const colorMap = (gColors: IPaletteColors): Record<TButtonColors, IColorConfig> 
 
 const variantConfig: Record<TButtonVariants, IVariantConfig> = {
   main: { type: "uses-color", class: "btnVariantMain" },
-  sub: { type: "static", class: "btnVariantSub" },
+  secondary: { type: "static", class: "btnVariantSecondary" },
   outline: { type: "uses-color", class: "btnVariantOutline" },
   ghost: { type: "uses-color", class: "btnVariantGhost" },
   "bg-light": { type: "static", class: "btnVariantBgLight" },
