@@ -9,10 +9,10 @@ import useGlobalStyles from "@/hooks/useGlobalStyles";
 import { LuHouse } from "react-icons/lu";
 
 // Components
-import Container from "@/components/layout/Container";
-import View from "@/components/ui/own/View";
-import Text from "@/components/ui/own/Text";
-import Button from "@/components/ui/own/Button";
+import { Container} from "@/components/layout/Container";
+import { View} from "@/components/ui/own/View";
+import { Text} from "@/components/ui/own/Text";
+import { Button} from "@/components/ui/own/Button";
 
 export default function Home() {
   const { gColors } = useGlobalStyles();
@@ -26,7 +26,7 @@ export default function Home() {
       </View>
 
       <Button>Continuar</Button>
-      <Button variant="sub">Continuar</Button>
+      <Button variant="secondary">Continuar</Button>
       <Button variant="main" color="primary">Continuar</Button>
       <Button variant="outline" color="success">Continuar</Button>
 

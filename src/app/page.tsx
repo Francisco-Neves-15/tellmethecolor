@@ -10,11 +10,13 @@ import fStyles from "./style.module.scss"
 import { useI18n } from "@/hooks/useI18n";
 
 // Components
-import Container from "@/components/layout/Container";
-import View from "@/components/ui/own/View";
-import Text from "@/components/ui/own/Text";
-import Select, { TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/own/Select";
-import Button from "@/components/ui/own/Button";
+import { Container } from "@/components/layout/Container";
+import { View } from "@/components/ui/own/View";
+import { Input } from "@/components/ui/own/Input";
+import { DivisorLine } from "@/components/ui/own/DivisorLine";
+import { Text } from "@/components/ui/own/Text";
+import { Button } from "@/components/ui/own/Button";
+import { Select, TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/own/Select";
 import { LuHouse } from "react-icons/lu";
 
 
@@ -76,32 +78,31 @@ export default function Home() {
 
         <View style={{ position: "absolute", top: 0, left: 0 }}>
           <Select
-            boxStyles={{ className: "bg-danger" }}
+            boxStyles={{ boxVariant: "secondary" }}
             items={test2lista}
             value={test2}
             onChangeValue={(i: TSelectItems) => {
               setTest2(i);
             }}
             behavoir="dropdown"
+            disabled
           />
         </View>
 
         <View style={{ position: "absolute", top: 0, right: 0 }}>
           <Select
-            boxStyles={{ className: "bg-danger" }}
             items={test2lista}
             value={test2}
             onChangeValue={(i: TSelectItems) => {
               setTest2(i);
             }}
+            search
             behavoir="adapt"
-            disabled
           />
         </View>
 
         <View style={{ position: "absolute", bottom: 0, left: 0 }}>
           <Select
-            boxStyles={{ className: "bg-danger" }}
             items={test2lista}
             value={test2}
             onChangeValue={(i: TSelectItems) => {
@@ -125,7 +126,6 @@ export default function Home() {
 
 
       </View>
-
 
       <Button
         onClick={() => dropdownTest2Ref.current?.open({ behavior: "modal" })}

@@ -10,9 +10,9 @@ import { LuTriangleAlert } from "react-icons/lu";
 import { useI18n } from "@/hooks/useI18n";
 
 // Components
-import Container from "@/components/layout/Container";
-import View from "@/components/ui/own/View";
-import Text from "@/components/ui/own/Text";
+import { Container } from "@/components/layout/Container";
+import { View } from "@/components/ui/own/View";
+import { Text } from "@/components/ui/own/Text";
 
 export default function NotFound() {
   const tNotFound = useI18n("pag-notFound");

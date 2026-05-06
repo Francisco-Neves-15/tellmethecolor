@@ -8,9 +8,9 @@ import useGlobalStyles from "@/hooks/useGlobalStyles";
 // Components
 
 // Icons
-import Container from "@/components/layout/Container";
-import View from "@/components/ui/own/View";
-import Button from "@/components/ui/own/Button";
+import { Container } from "@/components/layout/Container";
+import { View } from "@/components/ui/own/View";
+import { Button } from "@/components/ui/own/Button";
 
 export default function Settings() {
   const { gColors } = useGlobalStyles();

@@ -7,8 +7,10 @@ import fStyles from "./style.module.scss";
 
 // Icons
 import { LuX, LuEye, LuEyeClosed, LuSearch, LuCalendar, LuClock, LuCalendarClock } from "react-icons/lu";
-import Button from "../Button";
-import View from "../View";
+
+// Components
+import { Button } from "@/components/ui/own/Button";
+import { View } from "@/components/ui/own/View";
 
 export type TInputVariant =
   | "text"
@@ -43,7 +45,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   clearFunction?: () => void;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       variant = "text",
@@ -425,6 +427,3 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
-
-export default Input;
-Input.displayName = "Input";
