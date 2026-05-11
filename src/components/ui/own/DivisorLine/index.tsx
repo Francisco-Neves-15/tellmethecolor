@@ -1,6 +1,6 @@
 "use client";
 
-import useGlobalStyles from "@/hooks/useGlobalStyles";
+import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 import { CSSProperties, forwardRef } from "react";
 
 type TLineDirection =
@@ -8,13 +8,13 @@ type TLineDirection =
   | "vertical";
 
 
-interface DivisorProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DivisorProps {
   show?: boolean;
   direction?: TLineDirection;
   thickness?: number;
   color?: string;
-  className?: string;
   style?: CSSProperties;
+  className?: string;
 };
 
 

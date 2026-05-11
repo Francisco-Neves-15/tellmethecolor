@@ -14,7 +14,7 @@ import { createPortal } from "react-dom";
 import { LuX, LuChevronDown } from "react-icons/lu";
 
 // Styles
-import useGlobalStyles from "@/hooks/useGlobalStyles";
+import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss"
 
 // Components
@@ -80,6 +80,7 @@ interface ISelect {
   items: TSelectItems[];
   value: TSelectItems | null;
   onChangeValue: (item: TSelectItems) => void;
+  onChange?: () => void;
   search?: boolean;
   defaultValueIdOrIndex?: string | number | null;
   placeholder?: string;
@@ -128,6 +129,7 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   items = [],
   value,
   onChangeValue,
+  onChange,
   search = false,
   defaultValueIdOrIndex = null,
   placeholder,
@@ -281,6 +283,7 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
 
     if (selectedItem !== undefined) {
       onChangeValue(selectedItem);
+      onChange?.();
     }
 
   }, [defaultValueIdOrIndex, items]);
@@ -418,6 +421,7 @@ export const Select = forwardRef<ISelectRef, ISelect>(({
   const onSelectValue = (value: TSelectItems) => {
     if (disabled) return;
     onChangeValue(value);
+    onChange?.();
     close();
     // DEBUG
     // selectValueIsPrimitive(value) ?

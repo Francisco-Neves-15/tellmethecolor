@@ -2,7 +2,7 @@
 
 import { IPaletteColors } from "@/types/theme";
 
-function useGlobalStyles() {
+export function useGlobalStyles() {
   return {
     // AUTO-GENERATED--PALETTE-COLORS START
     gColors: {
@@ -35,6 +35,4 @@ function useGlobalStyles() {
     } as IPaletteColors,
 // AUTO-GENERATED--PALETTE-COLORS END
   };
-}
-
-export default useGlobalStyles;
+};

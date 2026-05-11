@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 // Style
-import useGlobalStyles from "@/hooks/useGlobalStyles";
+import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 
 // Components
 

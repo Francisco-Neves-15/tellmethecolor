@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 // Style
-import useGlobalStyles from "@/hooks/useGlobalStyles";
+import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss"
 
 // Hooks
@@ -18,6 +18,7 @@ import { Text } from "@/components/ui/own/Text";
 import { Button } from "@/components/ui/own/Button";
 import { Select, TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/own/Select";
 import { LuHouse } from "react-icons/lu";
+import { Slider } from "@/components/ui/own/Slider";
 
 
 
@@ -59,10 +60,19 @@ export default function Home() {
     }
   }, [test2])
 
+  const [slider, setSlider] = useState<number>(0);
+
   return (
     <Container padding header={true}>
 
       <input type="range" name="" id="" />
+
+      <Slider
+        value={slider}
+        onChangeValue={(v) => { setSlider(v); console.log(v) }}
+        updateOnDrag
+        thumbColor={{ high: "#00ff00", low: "#ff0000" }}
+      />
 
       <br />
 

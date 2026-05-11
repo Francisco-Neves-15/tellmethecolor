@@ -1,9 +1,9 @@
 "use client";
 
-import { forwardRef, useEffect, useRef, useState } from "react";
-import useGlobalStyles from "@/hooks/useGlobalStyles";
+import { CSSProperties, forwardRef, useEffect, useRef, useState } from "react";
+import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 
-interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ProgressProps {
   barColor?: string | null;
   wrapperColor?: string | null;
   value?: number;
@@ -13,6 +13,8 @@ interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
   duration?: number;
   width?: number | "full";
   height?: number | "full";
+  style?: CSSProperties;
+  className?: string;
 }
 
 export const Progress = forwardRef<HTMLDivElement, ProgressProps>(({
@@ -27,7 +29,6 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(({
   height = 16,
   className,
   style,
-  ...props
 }, ref ) => {  
 
   const { gColors } = useGlobalStyles();
@@ -82,7 +83,6 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(({
       ref={ref}
       className={`relative overflow-hidden ${className ?? ""}`}
       style={computedStyle}
-      {...props}
     >
       <div className="w-full h-full" style={{ backgroundColor: finalWrapperColor }}>
         <div

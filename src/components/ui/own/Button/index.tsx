@@ -2,7 +2,7 @@
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
 // Styles
-import useGlobalStyles from "@/hooks/useGlobalStyles";
+import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss";
 
 // Types
