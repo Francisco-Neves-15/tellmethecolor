@@ -68,10 +68,18 @@ export default function Home() {
       <input type="range" name="" id="" />
 
       <Slider
+        indicator="circle"
         value={slider}
         onChangeValue={(v) => { setSlider(v); console.log(v) }}
-        updateOnDrag
-        thumbColor={{ high: "#00ff00", low: "#ff0000" }}
+        
+      />
+
+      <br /> <br /> <br />
+
+      <Slider
+        indicator="line"
+        value={slider}
+        onChangeValue={(v) => { setSlider(v); console.log(v) }}
       />
 
       <br />

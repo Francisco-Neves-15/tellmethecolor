@@ -1,3 +1,5 @@
+@use "@mixins" as mix;
+
 .sliderWrapper {
   position: relative;
   user-select: none;
@@ -22,19 +24,27 @@
   overflow: hidden;
 }
 
-.sliderThumbDot {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%) translateX(-50%);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  cursor: pointer;
-
-}
-
 .sliderThumbHover {
   &:hover {
     filter: contrast(115%);
   }
+}
+
+// Indicator
+
+.sliderIndicator {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) translateX(-50%);
+  cursor: pointer;
+}
+
+.sliderIndicatorDot {
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.sliderIndicatorLine {
+  border-radius: 8px;
 }
