@@ -17,9 +17,12 @@ interface IVariantIndicatorConfig {
   className: string;
 };
 
+type TSliderDirection = "horizontal" | "vertical";
+
 interface ISlider {
   variant?: TSliderVariant;
   indicator?: TSliderIndicatorVariant;
+  direction?: TSliderDirection;
 
   value?: number;
   onChangeValue?: (value: number) => void;
@@ -46,6 +49,7 @@ export interface ISliderRef { };
 export const Slider = forwardRef<ISliderRef, ISlider>(({
   variant = "primary",
   indicator = "circle",
+  direction = "horizontal",
 
   value,
   onChangeValue,
@@ -68,6 +72,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   disabled
 }, ref) => {
   const { gColors } = useGlobalStyles();
+
+  if (direction === "vertical") { console.error("Slider Vertical Not Enable"); return <></> };
 
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -265,7 +271,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     "circle": {
       style: {
         left: `${percent}%`,
-        height: typeof height === "number" ? `${height * 1.5}px` : "24px",
+        height: typeof height === "number" ? `${height * 1.5}px` : "16px",
         backgroundColor: getThumbColor(percent),
       },
       className: `
@@ -277,7 +283,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
       style: {
         left: `${percent}%`,
         width: 4,
-        height: typeof height === "number" ? `${height + 12}px` : "24px",
+        height: typeof height === "number" ? `${height + 12}px` : "16px",
         backgroundColor: gColors.light
       },
       className: `
@@ -306,7 +312,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         onPointerDown={handleTrackClick}
         className={`${resolvedVariant.track}`} 
         style={{
-          height: typeof height === "number" ? `${height}px` : "24px",
+          height: typeof height === "number" ? `${height}px` : "16px",
           backgroundColor: resolvedTrackColor,
         }}
       />
@@ -319,7 +325,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         `} 
         style={{
           width: `${percent}%`,
-          height: typeof height === "number" ? `${height}px` : "24px",
+          height: typeof height === "number" ? `${height}px` : "16px",
           backgroundColor: getThumbColor(percent),
         }}
       />

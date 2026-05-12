@@ -68,18 +68,11 @@ export default function Home() {
       <input type="range" name="" id="" />
 
       <Slider
+        direction="horizontal"
         indicator="circle"
         value={slider}
         onChangeValue={(v) => { setSlider(v); console.log(v) }}
-        
-      />
-
-      <br /> <br /> <br />
-
-      <Slider
-        indicator="line"
-        value={slider}
-        onChangeValue={(v) => { setSlider(v); console.log(v) }}
+        step={10}
       />
 
       <br />
