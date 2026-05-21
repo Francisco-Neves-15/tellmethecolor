@@ -91,6 +91,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     value ?? defaultValue ?? resolvedMin
   );
 
+  const isVertical = direction === "vertical";
+
   // Other's
 
   const resolvedTrackColor = trackColor ?? gColors.bgSecondary;
@@ -128,8 +130,6 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     if (!sliderRef.current) return internalValue;
 
     const rect = sliderRef.current.getBoundingClientRect();
-
-    const isVertical = direction === "vertical";
 
     const percent = isVertical
       ? 1 - (clientY - rect.top) / rect.height
@@ -226,8 +226,6 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
 
   // Value's
 
-  const isVertical = direction === "vertical";
-
   const fallbackValue = defaultValue ?? resolvedMin;
 
   const isControlled = value !== undefined;
@@ -244,8 +242,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
       (resolvedMax - resolvedMin)) *
     100;
 
-  const percent = isVertical ? 100 - percentRaw : percentRaw;
-
+  const percent = percentRaw;
 
   // Controlled
 
@@ -279,8 +276,10 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   const indicatorConfig: Record<TSliderIndicatorVariant, IVariantIndicatorConfig> = {
     "circle": {
       style: {
-        left: `${percent}%`,
-        height: typeof height === "number" ? `${height * 1.5}px` : "16px",
+        bottom: !isVertical ? undefined :`${percent}%`,
+        left: isVertical ? undefined :`${percent}%`,
+        width: !isVertical ? undefined : typeof width === "number" ? `${width * 1.5}px` : "16px",
+        height: isVertical ? undefined : typeof height === "number" ? `${height * 1.5}px` : "16px",
         backgroundColor: getThumbColor(percent),
       },
       className: `
@@ -291,8 +290,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     "line": {
       style: {
         left: `${percent}%`,
-        width: 4,
-        height: typeof height === "number" ? `${height + 12}px` : "16px",
+        width: !isVertical ? 4 : typeof width === "number" ? `${width + 12}px` : "16px",
+        height: isVertical ? 4 : typeof height === "number" ? `${height + 12}px` : "16px",
         backgroundColor: gColors.light
       },
       className: `
@@ -315,6 +314,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
       style={{
         width: `${width}px`,
         height: `${height}px`,
+        backgroundColor: "red"
       }}
     >
 
@@ -324,7 +324,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         style={{
           height: typeof height === "number" ? `${height}px` : "16px",
           width: "100%",
-          backgroundColor: resolvedTrackColor,
+          // backgroundColor: resolvedTrackColor,
+          backgroundColor: "green",
         }}
       />
 
@@ -338,7 +339,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         style={{
           width: `${percent}%`,
           height: typeof height === "number" ? `${height}px` : "16px",
-          backgroundColor: getThumbColor(percent),
+          // backgroundColor: getThumbColor(percent),
+          backgroundColor: "yellow",
         }}
       />
 

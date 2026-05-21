@@ -75,14 +75,14 @@ export default function Home() {
         allowTrackClick
         step={10}
       />
-
-      {/* <Slider
+      <br /><br /><br /><br /><br />
+      <Slider
         direction="vertical"
         indicator="circle"
         value={slider}
         onChangeValue={(v) => { setSlider(v); console.log(v) }}
         step={10}
-      /> */}
+      />
 
       <br />
 
