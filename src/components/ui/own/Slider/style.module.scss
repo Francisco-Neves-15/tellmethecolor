@@ -7,8 +7,6 @@
 }
 
 .sliderTrack {
-  width: 100%;
-  height: 100%;
   border: 1px solid var(--color-border);
   border-radius: 16px;
   overflow: hidden;
@@ -16,17 +14,27 @@
 
 .sliderThumb {
   position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
   border-radius: 16px;
   border: 1px solid var(--color-border);
   overflow: hidden;
 }
+.sliderThumbHorizontal {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.sliderThumbVertical {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
 .sliderThumbHover {
   &:hover {
-    filter: contrast(115%);
+    filter: brightness(75%);
+  }
+  &:active {
+    filter: brightness(125%);
   }
 }
 
@@ -34,10 +42,17 @@
 
 .sliderIndicator {
   position: absolute;
+  cursor: pointer;
+}
+.sliderIndicatorHorizontal {
   top: 50%;
   right: 0;
   transform: translateY(-50%) translateX(-50%);
-  cursor: pointer;
+}
+.sliderIndicatorVertical {
+  bottom: 0;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
 }
 
 .sliderIndicatorDot {

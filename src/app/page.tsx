@@ -72,8 +72,17 @@ export default function Home() {
         indicator="circle"
         value={slider}
         onChangeValue={(v) => { setSlider(v); console.log(v) }}
+        allowTrackClick
         step={10}
       />
+
+      {/* <Slider
+        direction="vertical"
+        indicator="circle"
+        value={slider}
+        onChangeValue={(v) => { setSlider(v); console.log(v) }}
+        step={10}
+      /> */}
 
       <br />
 

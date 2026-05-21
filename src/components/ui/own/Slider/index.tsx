@@ -73,7 +73,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
 }, ref) => {
   const { gColors } = useGlobalStyles();
 
-  if (direction === "vertical") { console.error("Slider Vertical Not Enable"); return <></> };
+  // if (direction === "vertical") { console.error("Slider Vertical Not Enable"); return <></> };
 
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -124,17 +124,22 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     return stepped;
   };
 
-  const getValueFromClientX = (clientX: number) => {
+  const getValueFromPointer = (clientX: number, clientY: number) => {
     if (!sliderRef.current) return internalValue;
 
     const rect = sliderRef.current.getBoundingClientRect();
 
-    const percent =
-      (clientX - rect.left) / rect.width;
+    const isVertical = direction === "vertical";
+
+    const percent = isVertical
+      ? 1 - (clientY - rect.top) / rect.height
+      : (clientX - rect.left) / rect.width;
+
+    const clampedPercent = Math.min(1, Math.max(0, percent));
 
     const raw =
       resolvedMin +
-      percent * (resolvedMax - resolvedMin);
+      clampedPercent * (resolvedMax - resolvedMin);
 
     return normalizeValue(raw);
   };
@@ -162,7 +167,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   const handleTrackClick = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!allowTrackClick) return;
 
-    const nextValue = getValueFromClientX(event.clientX);
+    const nextValue = getValueFromPointer(event.clientX, event.clientY);
 
     handlePointerDown(event);
     setInternalValue(nextValue);
@@ -185,7 +190,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     if (!dragging) return;
 
     const handleMove = (event: PointerEvent) => {
-      const nextValue = getValueFromClientX(event.clientX);
+      const nextValue = getValueFromPointer(event.clientX, event.clientY);
 
       setInternalValue(nextValue);
 
@@ -206,10 +211,9 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     if (!dragging) return;
 
     const handleUp = (event: PointerEvent) => {
-      const nextValue = getValueFromClientX(event.clientX);
+      const nextValue = getValueFromPointer(event.clientX, event.clientY);
 
       setDragging(false);
-
       emitValue(nextValue);
     };
 
@@ -222,6 +226,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
 
   // Value's
 
+  const isVertical = direction === "vertical";
+
   const fallbackValue = defaultValue ?? resolvedMin;
 
   const isControlled = value !== undefined;
@@ -233,10 +239,13 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         ? value
         : internalValue ?? fallbackValue;
 
-  const percent =
+  const percentRaw =
     ((currentValue - resolvedMin) /
       (resolvedMax - resolvedMin)) *
     100;
+
+  const percent = isVertical ? 100 - percentRaw : percentRaw;
+
 
   // Controlled
 
@@ -300,6 +309,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   return (
     <div 
       ref={sliderRef}
+      data-direction={direction}
       draggable={false}
       className={`${resolvedVariant.wrapper}`}
       style={{
@@ -313,6 +323,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         className={`${resolvedVariant.track}`} 
         style={{
           height: typeof height === "number" ? `${height}px` : "16px",
+          width: "100%",
           backgroundColor: resolvedTrackColor,
         }}
       />
@@ -321,7 +332,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         onPointerDown={handleTrackClick}
         className={`
           ${resolvedVariant.thumb}
-          ${allowTrackClick ? fStyles.sliderThumbHover : null}
+          ${isVertical ? fStyles.sliderThumbVertical : fStyles.sliderThumbHorizontal}
+          ${allowTrackClick ?? fStyles.sliderThumbHover}
         `} 
         style={{
           width: `${percent}%`,
@@ -332,7 +344,11 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
 
       <div
         onPointerDown={handlePointerDown}
-        className={`${fStyles.sliderIndicator} ${resolvedIndicator.className}`}
+        className={`
+          ${fStyles.sliderIndicator}
+          ${isVertical ? fStyles.sliderIndicatorVertical : fStyles.sliderIndicatorHorizontal}
+          ${resolvedIndicator.className}
+        `}
         style={resolvedIndicator.style}
       />
 
