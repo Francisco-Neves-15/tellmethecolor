@@ -38,13 +38,16 @@ interface ISlider {
 
   thumbColor?: string | { high?: string; normal?: string; low?: string; };
   trackColor?: string;
-  disabled?: boolean;
 
-  width?: React.CSSProperties["width"];
-  height?: React.CSSProperties["height"];
+  width?: CSSProperties["width"];
+  height?: CSSProperties["height"];
+  style?: CSSProperties;
+  className?: string;
+
+  disabled?: boolean;
 }
 
-export interface ISliderRef { };
+export interface ISliderRef {};
 
 export const Slider = forwardRef<ISliderRef, ISlider>(({
   variant = "primary",
@@ -65,15 +68,15 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
 
   thumbColor = undefined,
   trackColor = undefined,
-
-  width = 150,
-  height = 12,
+  
+  width,
+  height,
+  style,
+  className,
 
   disabled
 }, ref) => {
   const { gColors } = useGlobalStyles();
-
-  // if (direction === "vertical") { console.error("Slider Vertical Not Enable"); return <></> };
 
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -92,6 +95,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   );
 
   const isVertical = direction === "vertical";
+  const rWidth = width ?? !isVertical ? 150 : 12;
+  const rHeight = height ?? !isVertical ? 12 : 150;
 
   // Other's
 
@@ -278,8 +283,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
       style: {
         bottom: !isVertical ? undefined :`${percent}%`,
         left: isVertical ? undefined :`${percent}%`,
-        width: !isVertical ? undefined : typeof width === "number" ? `${width * 1.5}px` : "16px",
-        height: isVertical ? undefined : typeof height === "number" ? `${height * 1.5}px` : "16px",
+        width: !isVertical ? undefined : typeof rWidth === "number" ? `${rWidth * 1.5}px` : "16px",
+        height: isVertical ? undefined : typeof rHeight === "number" ? `${rHeight * 1.5}px` : "16px",
         backgroundColor: getThumbColor(percent),
       },
       className: `
@@ -290,8 +295,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     "line": {
       style: {
         left: `${percent}%`,
-        width: !isVertical ? 4 : typeof width === "number" ? `${width + 12}px` : "16px",
-        height: isVertical ? 4 : typeof height === "number" ? `${height + 12}px` : "16px",
+        width: !isVertical ? 4 : typeof rWidth === "number" ? `${rWidth + 12}px` : "16px",
+        height: isVertical ? 4 : typeof rHeight === "number" ? `${rHeight + 12}px` : "16px",
         backgroundColor: gColors.light
       },
       className: `
@@ -310,22 +315,22 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
       ref={sliderRef}
       data-direction={direction}
       draggable={false}
-      className={`${resolvedVariant.wrapper}`}
+      className={`${resolvedVariant.wrapper} ${className}`}
       style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        backgroundColor: "red"
+        width: `${rWidth}px`,
+        height: `${rHeight}px`,
+        ...style
       }}
     >
+
 
       <div
         onPointerDown={handleTrackClick}
         className={`${resolvedVariant.track}`} 
         style={{
-          height: typeof height === "number" ? `${height}px` : "16px",
           width: "100%",
-          // backgroundColor: resolvedTrackColor,
-          backgroundColor: "green",
+          height: "100%",
+          backgroundColor: resolvedTrackColor,
         }}
       />
 
@@ -337,10 +342,9 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
           ${allowTrackClick ?? fStyles.sliderThumbHover}
         `} 
         style={{
-          width: `${percent}%`,
-          height: typeof height === "number" ? `${height}px` : "16px",
-          // backgroundColor: getThumbColor(percent),
-          backgroundColor: "yellow",
+          width: !isVertical ? `${percent}%` : "100%",
+          height: !isVertical ? "100%" : `${percent}%`,
+          backgroundColor: getThumbColor(percent),
         }}
       />
 

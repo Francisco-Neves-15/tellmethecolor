@@ -75,7 +75,7 @@ export default function Home() {
         allowTrackClick
         step={10}
       />
-      <br /><br /><br /><br /><br />
+
       <Slider
         direction="vertical"
         indicator="circle"
