@@ -1,5 +1,5 @@
 "use client";
-import { forwardRef, useEffect, useState, useRef, CSSProperties } from "react";
+import { CSSProperties, forwardRef, useEffect, useState, useRef } from "react";
 
 import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss";
@@ -315,7 +315,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
       ref={sliderRef}
       data-direction={direction}
       draggable={false}
-      className={`${resolvedVariant.wrapper} ${className}`}
+      className={`${resolvedVariant.wrapper} ${className} ${disabled ? fStyles.sliderDisabled : null}`}
+      inert={disabled}
       style={{
         ...style,
         width: typeof rWidth === "number" ? `${rWidth}px` : rWidth,

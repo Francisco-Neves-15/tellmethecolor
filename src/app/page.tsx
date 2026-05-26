@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/own/Button";
 import { Select, TSelectItems, ISelectRef, selectValueIsPrimitive } from "@/components/ui/own/Select";
 import { LuHouse } from "react-icons/lu";
 import { Slider } from "@/components/ui/own/Slider";
+import { Switch } from "@/components/ui/own/Switch";
 
 
 
@@ -65,6 +66,11 @@ export default function Home() {
   return (
     <Container padding header={true}>
 
+      <Switch 
+        thumbColor={"purple"}
+        trackColor={{ false: "red", true: "lime" }}
+      />
+
       <DivisorLine />
 
       <Slider
@@ -76,6 +82,7 @@ export default function Home() {
         step={10}
         width={512}
         style={{ width: 400 }}
+        disabled
       />
 
       <Slider

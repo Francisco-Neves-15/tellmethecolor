@@ -63,3 +63,10 @@
 .sliderIndicatorLine {
   border-radius: 8px;
 }
+
+// 
+
+.sliderDisabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

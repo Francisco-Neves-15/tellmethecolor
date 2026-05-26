@@ -1,0 +1,14 @@
+@use "@mixins" as mix;
+
+.switchWrapper {
+  position: relative;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+// 
+
+.switchDisabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
