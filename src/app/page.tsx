@@ -65,15 +65,17 @@ export default function Home() {
   return (
     <Container padding header={true}>
 
-      <input type="range" name="" id="" />
+      <DivisorLine />
 
       <Slider
         direction="horizontal"
-        indicator="circle"
+        indicator="line"
         value={slider}
         onChangeValue={(v) => { setSlider(v); console.log(v) }}
         allowTrackClick
         step={10}
+        width={512}
+        style={{ width: 400 }}
       />
 
       <Slider

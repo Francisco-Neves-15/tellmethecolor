@@ -7,7 +7,6 @@ type TLineDirection =
   | "horizontal"
   | "vertical";
 
-
 interface DivisorProps {
   show?: boolean;
   direction?: TLineDirection;

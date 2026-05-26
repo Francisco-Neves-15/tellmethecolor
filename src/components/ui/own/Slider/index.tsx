@@ -95,8 +95,8 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   );
 
   const isVertical = direction === "vertical";
-  const rWidth = width ?? !isVertical ? 150 : 12;
-  const rHeight = height ?? !isVertical ? 12 : 150;
+  const rWidth = width ?? (!isVertical ? 150 : 12);
+  const rHeight = height ?? (!isVertical ? 12 : 150);
 
   // Other's
 
@@ -311,18 +311,17 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   const resolvedIndicator = getIndicator(indicator);
 
   return (
-    <div 
+    <div
       ref={sliderRef}
       data-direction={direction}
       draggable={false}
       className={`${resolvedVariant.wrapper} ${className}`}
       style={{
-        width: `${rWidth}px`,
-        height: `${rHeight}px`,
-        ...style
+        ...style,
+        width: typeof rWidth === "number" ? `${rWidth}px` : rWidth,
+        height: typeof rHeight === "number" ? `${rHeight}px` : rHeight,
       }}
     >
-
 
       <div
         onPointerDown={handleTrackClick}
@@ -339,7 +338,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         className={`
           ${resolvedVariant.thumb}
           ${isVertical ? fStyles.sliderThumbVertical : fStyles.sliderThumbHorizontal}
-          ${allowTrackClick ?? fStyles.sliderThumbHover}
+          ${allowTrackClick ? fStyles.sliderThumbHover : ""}
         `} 
         style={{
           width: !isVertical ? `${percent}%` : "100%",
