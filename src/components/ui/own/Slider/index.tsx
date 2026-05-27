@@ -4,6 +4,8 @@ import { CSSProperties, forwardRef, useEffect, useState, useRef } from "react";
 import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss";
 
+import { ColorByLevel } from "@/types/components";
+
 type TSliderVariant = "primary";
 interface IVariantConfig {
   wrapper: string;
@@ -36,8 +38,9 @@ interface ISlider {
   updateOnDrag?: boolean;
   allowTrackClick?: boolean;
 
-  thumbColor?: string | { high?: string; normal?: string; low?: string; };
   trackColor?: string;
+  fillColor?: "by-level" | string | ColorByLevel;
+  thumbColor?: "fill" | string | ColorByLevel;
 
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
@@ -66,8 +69,9 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   updateOnDrag = false,
   allowTrackClick = true,
 
-  thumbColor = undefined,
-  trackColor = undefined,
+  trackColor,
+  fillColor,
+  thumbColor = "fill",
   
   width,
   height,
@@ -98,27 +102,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   const rWidth = width ?? (!isVertical ? 150 : 12);
   const rHeight = height ?? (!isVertical ? 12 : 150);
 
-  // Other's
-
-  const resolvedTrackColor = trackColor ?? gColors.bgSecondary;
-
-  // Function's
-
-  const getThumbColor = (percent: number) => {
-    if (typeof thumbColor === "string") return thumbColor;
-
-    if (!thumbColor) return gColors.primary;
-
-    if (percent >= 75 && thumbColor.high) {
-      return thumbColor.high ?? gColors.success;
-    }
-
-    if (percent <= 15 && thumbColor.low) {
-      return thumbColor.low ?? gColors.danger;
-    }
-
-    return thumbColor.normal ?? gColors.primary;
-  };
+  // Value
 
   const normalizeValue = (raw: number) => {
     const clamped = Math.min(resolvedMax, Math.max(resolvedMin, raw));
@@ -185,7 +169,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
     if (value !== defaultValue) {
       onChangeValue?.(defaultValue);
       onChange?.();
-    }
+    };
   }, []);
 
   // Drag's Effect
@@ -262,13 +246,74 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   }, [value]);
 
   // =============== Styles ===============
+
+  const getLevelColor = (
+    color: string | ColorByLevel | undefined,
+    percent: number,
+    useDefaultLevels: boolean
+  ): string => {
+
+    const defaultColor =
+      percent >= 75
+        ? gColors.success
+        : percent <= 15
+          ? gColors.danger
+          : gColors.primary;
+
+    // No value
+    if (!color) {
+      return useDefaultLevels
+        ? defaultColor
+        : gColors.primary;
+    }
+
+    // Simple string
+    if (typeof color === "string") {
+      return color;
+    }
+
+    // By level object
+    if (percent >= 75) {
+      return color.high ?? defaultColor;
+    }
+
+    if (percent <= 15) {
+      return color.low ?? defaultColor;
+    }
+
+    return color.normal ?? defaultColor;
+  };
+
+  const getColors = (percent: number) => {
+
+    const trackFill =
+      fillColor === "by-level"
+        ? getLevelColor(undefined, percent, true)
+        : getLevelColor(fillColor, percent, false);
+
+    const thumb =
+      thumbColor === "fill"
+        ? trackFill
+        : thumbColor === "by-level"
+          ? getLevelColor(undefined, percent, true)
+          : getLevelColor(thumbColor, percent, false);
+
+    return {
+      trackBlank: trackColor ?? gColors.bgSecondary,
+      trackFill,
+      thumb,
+    };
+
+  };
+
+  const resolvedColors = getColors(percent);
   
   // Slider Variant's
   const variantConfig: Record<TSliderVariant, IVariantConfig> = {
     primary: {
-      "wrapper": fStyles.sliderWrapper,
-      "track": fStyles.sliderTrack,
-      "thumb": fStyles.sliderThumb
+      "wrapper": fStyles.sliderWrapperPrimary,
+      "track": fStyles.sliderTrackPrimary,
+      "thumb": fStyles.sliderThumbPrimary
     },
   } as const;
 
@@ -285,7 +330,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         left: isVertical ? undefined :`${percent}%`,
         width: !isVertical ? undefined : typeof rWidth === "number" ? `${rWidth * 1.5}px` : "16px",
         height: isVertical ? undefined : typeof rHeight === "number" ? `${rHeight * 1.5}px` : "16px",
-        backgroundColor: getThumbColor(percent),
+        backgroundColor: resolvedColors.thumb,
       },
       className: `
         ${fStyles.sliderIndicatorDot}
@@ -297,7 +342,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         left: `${percent}%`,
         width: !isVertical ? 4 : typeof rWidth === "number" ? `${rWidth + 12}px` : "16px",
         height: isVertical ? 4 : typeof rHeight === "number" ? `${rHeight + 12}px` : "16px",
-        backgroundColor: gColors.light
+        backgroundColor: gColors.base
       },
       className: `
         ${fStyles.sliderIndicatorLine}
@@ -310,12 +355,14 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
   };
   const resolvedIndicator = getIndicator(indicator);
 
+  // Return
+
   return (
     <div
       ref={sliderRef}
-      data-direction={direction}
       draggable={false}
-      className={`${resolvedVariant.wrapper} ${className} ${disabled ? fStyles.sliderDisabled : null}`}
+      data-value={`${value}`}
+      className={`${fStyles.sliderWrapper} ${resolvedVariant.wrapper} ${className} ${disabled ? fStyles.sliderDisabled : null}`}
       inert={disabled}
       style={{
         ...style,
@@ -330,7 +377,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         style={{
           width: "100%",
           height: "100%",
-          backgroundColor: resolvedTrackColor,
+          backgroundColor: resolvedColors.trackBlank,
         }}
       />
 
@@ -344,7 +391,7 @@ export const Slider = forwardRef<ISliderRef, ISlider>(({
         style={{
           width: !isVertical ? `${percent}%` : "100%",
           height: !isVertical ? "100%" : `${percent}%`,
-          backgroundColor: getThumbColor(percent),
+          backgroundColor: resolvedColors.trackFill,
         }}
       />
 

@@ -19,6 +19,7 @@ export interface IPaletteColors {
   "neutralAlpha": string;
   "text": string;
   "textSecondary": string;
+  "base": string;
   "bgBase": string;
   "bgBaseInverted": string;
   "bgSecondary": string;

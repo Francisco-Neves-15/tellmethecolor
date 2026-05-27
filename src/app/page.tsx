@@ -62,14 +62,10 @@ export default function Home() {
   }, [test2])
 
   const [slider, setSlider] = useState<number>(0);
+  const [eSswitch, setSwitch] = useState<boolean>(false);
 
   return (
     <Container padding header={true}>
-
-      <Switch 
-        thumbColor={"purple"}
-        trackColor={{ false: "red", true: "lime" }}
-      />
 
       <DivisorLine />
 
@@ -85,13 +81,46 @@ export default function Home() {
         disabled
       />
 
-      <Slider
-        direction="vertical"
-        indicator="circle"
-        value={slider}
-        onChangeValue={(v) => { setSlider(v); console.log(v) }}
-        step={10}
-      />
+      <View style={{ flexDirection: "row", gap: 4 }}>
+        <Slider
+          direction="vertical"
+          fillColor={{ low: "red" }}
+
+        />
+        <Slider
+          direction="vertical"
+          fillColor={{ low: "red", normal: "blue" }}
+        />
+        <Slider
+          direction="vertical"
+          fillColor={{ low: "red", normal: "blue", high: "lime" }}
+        />
+        <Slider
+          direction="vertical"
+          fillColor="by-level"
+          thumbColor="fill"
+        />
+        <Slider
+          direction="vertical"
+          fillColor="by-level"
+          thumbColor={{ low: "red", normal: "blue", high: "lime" }}
+        />
+      </View>
+
+      <View style={{ flexDirection: "row", gap: 4, marginTop: 44 }}>
+        <Switch 
+          thumbColor={"purple"}
+          trackColor={{ false: "red", true: "lime" }}
+
+          // value={eSswitch}
+          // onChangeValue={(v) => setSwitch(v)}
+
+          onChangeValue={(v) => console.log(v)}
+          onChange={() => console.log("mudou")}
+          onActivate={() => console.log("ligou")}
+          onDeactivate={() => console.log("desligou")}
+        />
+      </View>
 
       <br />
 

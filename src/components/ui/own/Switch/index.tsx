@@ -1,11 +1,13 @@
 "use client";
-import { CSSProperties, forwardRef, useEffect, useState } from "react";
+import { CSSProperties, forwardRef, useEffect, useRef, useState } from "react";
 
 import { useGlobalStyles } from "@/hooks/useGlobalStyles";
 import fStyles from "./style.module.scss";
-import { ColorByState } from "@/types/components";
+import { ColorByBoolean, ValueByBoolean } from "@/types/components";
 
 type TSwitchVariant = "primary";
+
+type TSwitchThumbVariant = "primary";
 
 interface IVariantConfig {
   wrapper: string;
@@ -23,8 +25,9 @@ interface ISwitch {
   onActivate?: () => void;
   onDeactivate?: () => void;
 
-  thumbColor?: string | ColorByState;
-  trackColor?: ColorByState;
+  trackColor?: string | ColorByBoolean;
+  thumbColor?: string | ColorByBoolean;
+  thumbVariant?: TSwitchThumbVariant | ValueByBoolean;
 
   style?: CSSProperties;
   className?: string;
@@ -41,9 +44,12 @@ export const Switch = forwardRef<ISwitchRef, ISwitch>(({
   onChangeValue,
   onChange,
   defaultValue,
+  onActivate,
+  onDeactivate,
 
   thumbColor,
   trackColor,
+  thumbVariant,
 
   style,
   className,
@@ -52,27 +58,95 @@ export const Switch = forwardRef<ISwitchRef, ISwitch>(({
 }, ref) => {
   const { gColors } = useGlobalStyles();
 
-  // Dimensions
-  // const metrics = SWITCH_METRICS[variant];
+  const lastEmittedValueRef = useRef<boolean>(value ?? defaultValue);
+  const [internalValue, setInternalValue] = useState<boolean | undefined>(value ?? defaultValue);
 
-  // Colors
+  // Value
 
-  const resolvedThumbColor =
-    typeof thumbColor === "string"
-      ? thumbColor
-      : thumbColor?.[value ? "true" : "false"] ?? gColors.bgSecondary;
+  const fallbackValue = defaultValue;
 
-  const resolvedTrackColor = trackColor?.[value ? "true" : "false"] ?? (value ? gColors.success : gColors.bgBase);
+  const isControlled = value !== undefined;
+
+  const currentValue =
+    isControlled
+      ? value
+      : internalValue ?? fallbackValue;
+
+  const emitValue = (nextValue: boolean) => {
+    if (disabled) return;
+
+    if (nextValue === lastEmittedValueRef.current) return;
+
+    lastEmittedValueRef.current = nextValue;
+
+    onChangeValue?.(nextValue);
+    onChange?.();
+
+    if (nextValue) {
+      onActivate?.();
+    } else { 
+      onDeactivate?.();
+    }
+
+  };
+
+  // Handler's
+  const handleSwitch = () => {
+    const nextValue = !currentValue;
+    setInternalValue(nextValue);
+    emitValue(nextValue);
+  };
+
+  // Auto Select if "defaultValue"
+  useEffect(() => {
+    if (defaultValue === undefined || defaultValue === null) return;
+    if (value !== defaultValue) {
+      onChangeValue?.(defaultValue);
+      onChange?.();
+      if (defaultValue) {
+        onActivate?.();
+      } else { 
+        onDeactivate?.();
+      };
+    };
+  }, []);
+
+  // Controlled
+  
+  useEffect(() => {
+    if (value !== undefined) {
+      setInternalValue(value);
+    };
+    lastEmittedValueRef.current = value ?? fallbackValue;
+  }, [value]);
 
   // =============== Styles ===============
+
+  const getColors = (v: boolean | undefined) => {
+
+    if (!v) v = false;
+
+    const thumb =
+      typeof thumbColor === "string"
+        ? thumbColor
+        : thumbColor?.[v ? "true" : "false"] ?? gColors.bgSecondary;
+
+    const track =
+      typeof trackColor === "string"
+        ? trackColor
+        : trackColor?.[v ? "true" : "false"] ?? (v ? gColors.success : gColors.bgBase);
+
+    return { thumb, track };
+  }
+  const resolvedColors = getColors(currentValue);
   
   // Switch Variant's
   const variantConfig: Record<TSwitchVariant, IVariantConfig> = {
     primary: {
-      "wrapper": fStyles.switchWrapper,
-      "track": fStyles.switchTrack,
-      "thumb": fStyles.switchThumb
-    },
+      "wrapper": fStyles.switchWrapperPrimary,
+      "track": fStyles.switchTrackPrimary,
+      "thumb": fStyles.switchThumbPrimary
+    }
   } as const;
 
   const getVariant = (variant: TSwitchVariant) => {
@@ -80,27 +154,38 @@ export const Switch = forwardRef<ISwitchRef, ISwitch>(({
   };
   const resolvedVariant = getVariant(variant);
 
+  // Return
+
   return (
-    <div
+    <button
       draggable={false}
-      className={`${resolvedVariant.wrapper} ${className} ${disabled ? fStyles.switchDisabled : null}`}
+      data-value={currentValue ? "active" : "desactive"}
+      className={`
+        ${fStyles.switchWrapper}
+        ${resolvedVariant.wrapper}
+        ${className}
+        ${disabled ? fStyles.switchDisabled : null}
+      `}
       inert={disabled}
       style={{
         ...style,
       }}
+      onClick={() => {
+        handleSwitch()
+      }}
     >
       <div
-        className={`${resolvedVariant.track}`}
+        className={`${fStyles.switchTrack} ${resolvedVariant.track}`}
         style={{
-          backgroundColor: resolvedTrackColor
+          backgroundColor: resolvedColors.track
         }}
       />
       <div
-        className={`${resolvedVariant.thumb}`}
+        className={`${fStyles.switchThumb} ${resolvedVariant.thumb}`}
         style={{
-          backgroundColor: resolvedThumbColor
+          backgroundColor: resolvedColors.thumb
         }}
       />
-    </div>
+    </button>
   );
 });

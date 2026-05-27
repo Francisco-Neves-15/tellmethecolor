@@ -1,4 +1,6 @@
 @use "@mixins" as mix;
+  
+// Base
 
 .sliderWrapper {
   position: relative;
@@ -6,13 +8,17 @@
   -webkit-user-drag: none;
 }
 
-.sliderTrack {
+// Primary
+
+// .sliderWrapperPrimary { }
+
+.sliderTrackPrimary {
   border: 1px solid var(--color-border);
   border-radius: 16px;
   overflow: hidden;
 }
 
-.sliderThumb {
+.sliderThumbPrimary {
   position: absolute;
   border-radius: 16px;
   border: 1px solid var(--color-border);

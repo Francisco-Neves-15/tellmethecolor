@@ -1,12 +1,50 @@
 @use "@mixins" as mix;
 
+// Base
+
 .switchWrapper {
   position: relative;
   user-select: none;
   -webkit-user-drag: none;
 }
 
-// 
+// Primary
+
+.switchWrapperPrimary {
+  width: 100px;
+  height: 60px;
+}
+.switchWrapperPrimary[data-value="active"] {
+  background-color: green;
+  border-radius: 64px;
+}
+.switchWrapperPrimary[data-value="desactive"] {
+  background-color: lime;
+  border-radius: 16px;
+}
+
+.switchTrackPrimary {
+  width: 100%;
+  height: 100%;
+}
+.switchWrapperPrimary[data-value="active"] .switchTrackPrimary {
+  background-color: blue;
+}
+.switchWrapperPrimary[data-value="desactive"] .switchTrackPrimary {
+  background-color: red;
+}
+
+.switchThumbPrimary {
+  aspect-ratio: 1;
+}
+.switchWrapperPrimary[data-value="active"] .switchThumbPrimary {
+  height: 90%;
+}
+.switchWrapperPrimary[data-value="desactive"] .switchThumbPrimary {
+  height: 50%;
+}
+
+//
 
 .switchDisabled {
   pointer-events: none;

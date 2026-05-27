@@ -24,6 +24,7 @@ export default {
         neutralAlpha: "var(--color-neutralAlpha)",
         text: "var(--color-text)",
         textSecondary: "var(--color-textSecondary)",
+        base: "var(--color-base)",
         bgBase: "var(--color-bgBase)",
         bgBaseInverted: "var(--color-bgBaseInverted)",
         bgSecondary: "var(--color-bgSecondary)",
